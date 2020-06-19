@@ -1,20 +1,21 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 
+import Card from '../components/molecules/Card';
+
 const SelectScreen = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
-            <View style={styles.top}>
-                <Text style={styles.text}>Select</Text> 
-            </View>
-            <View style={styles.bottom}>
-                <Button 
-                    title="Back"
-                    onPress={() => {
-                        navigation.pop();
-                    }}
-                />
-            </View>
+            <Card 
+                title="Card Title"
+            />
+            <Button 
+                title="Back"
+                color="white"
+                onPress={() => {
+                    navigation.pop();
+                }}
+            />
         </View>
     )
 }
@@ -23,7 +24,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#03658C' 
+        backgroundColor: '#03658C',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     text: {
         fontSize: 40, 
@@ -32,14 +35,8 @@ const styles = StyleSheet.create({
     },
     top: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'flex-start',
         padding: '10%'
     }, 
-    bottom: {
-        flex: 1,
-        // backgroundColor: '#D95A2B'
-    }
 });
 
 export default SelectScreen;

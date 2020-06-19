@@ -5,11 +5,12 @@ const WelcomeScreen = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.top}>
-                <Text style={styles.text}>Welcome</Text> 
+                <Text style={styles.text}>Travel Companion</Text> 
             </View>
             <View style={styles.bottom}>
                 <Button 
                     title="Let's get started"
+                    color="white"
                     onPress={() => {
                         navigation.push('Select', {
 
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#03658C' 
+        backgroundColor: '#D95A2B' 
     },
     text: {
         fontSize: 40, 
