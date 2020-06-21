@@ -5,11 +5,11 @@ const WelcomeScreen = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.top}>
-                <Text style={styles.text}>Travel Companion</Text> 
+                <Text style={styles.text}>Travel Anywhere</Text> 
             </View>
             <View style={styles.bottom}>
                 <Button 
-                    title="Let's get started"
+                    title="Hit me!"
                     color="white"
                     onPress={() => {
                         navigation.push('Select', {

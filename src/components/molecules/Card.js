@@ -9,12 +9,12 @@ const Card = ({ title, description }) => {
         <View style={styles.container}>
             <View style={styles.title}>
                 <Title 
-                    title={cardData[1].title}
+                    title={title}
                 />
             </View>
             <View style={styles.description}>
                 <Description
-                    description={cardData[1].description}
+                    description={description}
                 />
             </View>
         </View>
@@ -24,7 +24,6 @@ const Card = ({ title, description }) => {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#F0F0F2',
-        width: '90%',
         height: 200,
         borderRadius: 15,
         borderTopWidth: 15,

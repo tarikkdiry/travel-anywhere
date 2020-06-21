@@ -1,6 +1,6 @@
 [
     {
-        "title": "Ask a Local - Food",
+        "title": "Ask a Local",
         "description": "Ask the nearest local (in their native language, of course), where they like to eat. Go there!",
         "category": "Food"
     },
@@ -20,7 +20,7 @@
         "category": "Food"
     },
     {
-        "title": "When in [currentCountry]!",
+        "title": "When in...",
         "description": "Make sure you go the whole day only eating when the locals typically do.",
         "category": "Food"
     },
