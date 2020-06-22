@@ -1,5 +1,13 @@
 import * as firebase from 'firebase';
 
+export function login({ email, password }) {
+
+}
+
+export function signup({ email, password, displayName }) {
+    
+}
+
 export function addCard(card, addComplete) {
     firebase.firestore()
     .collection('cards')

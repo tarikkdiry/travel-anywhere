@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 // EXPO
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-// import * as firebase from 'firebase';
+import * as firebase from 'firebase';
 
 // NAVIGATION
 import { NavigationContainer } from '@react-navigation/native';
@@ -17,18 +17,18 @@ import SelectScreen from './src/screens/SelectScreen';
 
 const Stack = createStackNavigator();
 
-// var firebaseConfig = {
-//   apiKey: "AIzaSyDKocOqws6R-HNoXFGRck8n3eHSzNv8x7Q",
-//   authDomain: "travel-anywhere-14e79.firebaseapp.com",
-//   databaseURL: "https://travel-anywhere-14e79.firebaseio.com",
-//   projectId: "travel-anywhere-14e79",
-//   storageBucket: "travel-anywhere-14e79.appspot.com",
-//   messagingSenderId: "868985984808",
-//   appId: "1:868985984808:web:5fcba6f80c129a6218221d",
-//   measurementId: "G-2W2TTHYR6Q"
-// };
-// // Initialize Firebase
-// firebase.initializeApp(firebaseConfig);
+var firebaseConfig = {
+  apiKey: "AIzaSyDKocOqws6R-HNoXFGRck8n3eHSzNv8x7Q",
+  authDomain: "travel-anywhere-14e79.firebaseapp.com",
+  databaseURL: "https://travel-anywhere-14e79.firebaseio.com",
+  projectId: "travel-anywhere-14e79",
+  storageBucket: "travel-anywhere-14e79.appspot.com",
+  messagingSenderId: "868985984808",
+  appId: "1:868985984808:web:5fcba6f80c129a6218221d",
+  measurementId: "G-2W2TTHYR6Q"
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
