@@ -1,13 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, Image } from 'react-native';
+import BackArrow from '../../assets/back_arrow.png';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+// API
+import { login, signup, signout } from '../api/CardsApi';
 
 const WelcomeScreen = ({ route, navigation }) => {
+
+    onSignedOut = () => {
+        console.log('Signed out!');
+        navigation.pop(); // REFACTOR with more sophisticated navigation schema
+    }
+
     return (
         <View style={styles.container}>
-            <View style={styles.top}>
-                <Text style={styles.text}>Travel Anywhere</Text> 
-            </View>
-            <View style={styles.bottom}>
+            <TouchableOpacity 
+                activeOpacity={0.1}
+                underlayColor="#DDDDDD"
+                style={styles.arrow}
+                onPress={() => {
+                    signout(onSignedOut)
+                }}>
+            <Image 
+                source={BackArrow}
+                style={styles.arrow}
+            />
+            </TouchableOpacity>
+            <Text style={styles.text}>Travel Anywhere</Text> 
+            <View style={styles.button}> 
                 <Button 
                     title="Hit me!"
                     color="white"
@@ -26,22 +47,26 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#D95A2B' 
+        backgroundColor: '#D95A2B',
+        padding: 20
     },
     text: {
         fontSize: 40, 
         color: 'white', 
-        fontFamily: 'regular'
+        fontFamily: 'regular',
+        marginTop: '20%',
+        padding: 20
     },
-    top: {
-        flex: 2,
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        padding: '10%'
-    }, 
-    bottom: {
+    arrow: {
+        height: 50,
+        width: 50,
+        tintColor: 'white',
+        marginTop: '20%'
+    },
+    button: {
         flex: 1,
-        backgroundColor: '#D95A2B'
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 });
 

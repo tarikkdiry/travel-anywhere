@@ -1,7 +1,9 @@
 import React, { Component, useState } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import AuthForm from '../components/organisms/AuthForm';
-// import LoginForm from '../components/organisms/LoginForm';
+
+// API
+import {login, signup, subscribeToAuthChanges} from '../api/CardsApi';
 
 class LoginScreen extends Component {
     constructor(props) {
@@ -15,16 +17,24 @@ class LoginScreen extends Component {
         // };
     }
 
+    // _unsubscribe = null;
+
     state = {
         authMode: 'login'
     }
 
     componentDidMount() {
-
+        subscribeToAuthChanges(this.onAuthStateChanged);
     }
 
     componentWillUnmount() {
+        // this._unsubscribe()
+    }
 
+    onAuthStateChanged = (user) => {
+        if (user !== null) {
+            this.props.navigation.push('Welcome'); //Might be navigation.navigate
+        }
     }
 
     switchAuthMode = () => {
@@ -48,25 +58,24 @@ class LoginScreen extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.top}>
-                    <Text style={styles.text}>Login</Text> 
-                    <View style={styles.authForm}>
-                        <AuthForm 
-                            authMode={this.state.authMode}
-                            switchAuthMode={this.switchAuthMode}
-                        />
-                    </View>
-                    <Button 
-                        title="Submit"
-                        color="white"
-                        onPress={() => {
-                            this.props.navigation.push('Welcome', {
-
-                            })
-                        }}
+                <Text style={styles.text}>Login</Text> 
+                <View style={styles.authForm}>
+                    <AuthForm 
+                        login={login}
+                        signup={signup}
+                        authMode={this.state.authMode}
+                        switchAuthMode={this.switchAuthMode}
                     />
+                <Button 
+                    title="Submit"
+                    color="white"
+                    onPress={() => {
+                        this.props.navigation.push('Welcome', {
+
+                        })
+                    }}
+                />
                 </View>
-                
             </View>
         );
     }
@@ -76,28 +85,31 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#F2884B' 
+        backgroundColor: '#F2884B',
+        justifyContent: 'center',
+        // alignItems: 'center'
     },
     authForm: {
-        // flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        flex: 1,
+        // justifyContent: 'center',
+        // alignItems: 'center'
     },
     text: {
         fontSize: 40, 
         color: 'white', 
-        fontFamily: 'regular'
+        fontFamily: 'regular',
+        marginLeft: '10%',
+        marginTop: '60%',
+        paddingBottom: '10%',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     top: {
-        flex: 1,
+        // flex: 1,
         justifyContent: 'center',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         padding: '10%',
     }, 
-    // bottom: {
-    //     flex: 1,
-    //     backgroundColor: '#F2884B'
-    // }
 });
 
 export default LoginScreen;

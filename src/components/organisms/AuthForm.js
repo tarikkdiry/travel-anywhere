@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, TextInput, Button, Text } from 'react-native';
+// import { Container} from 'native-base';
 import { withFormik } from 'formik';
 
 const AuthForm = (props) => {
 
     displayNameInput = (
-        <View> 
+        <View style={styles.container}> 
             <TextInput 
                 style={styles.form}
                 onChangeText={text => props.setFieldValue('displayName', text)}
@@ -20,14 +21,14 @@ const AuthForm = (props) => {
             {props.authMode === 'signup' ? this.displayNameInput : null}
             <TextInput 
                 style={styles.form}
-                onChangeText={text => props.setFieldValue('displayName', text)}
-                placeholder='Display Name'
+                onChangeText={text => props.setFieldValue('email', text)}
+                placeholder='Email'
              />
-             <Text style={styles.validationText}>{props.errors.displayName}</Text>
+             <Text style={styles.validationText}>{props.errors.email}</Text>
              <TextInput 
                 style={styles.form}
-                onChangeText={text => props.setFieldValue('displayName', text)}
-                placeholder='Display Name'
+                onChangeText={text => props.setFieldValue('password', text)}
+                placeholder='Password'
              />
              <Text style={styles.validationText}>{props.errors.password}</Text>
              <Button 
@@ -56,10 +57,10 @@ const styles = StyleSheet.create({
         width: 300,
         height: 50,
         borderColor: 'white',
-        borderWidth: 1
+        borderBottomWidth: 1
     },
     validationText: {
-
+        alignItems: 'center'
     }
 });
 
@@ -79,7 +80,7 @@ export default withFormik({
         if (!values.password) {
             errors.password = 'Password Required';
         } else if (values.password.length < 10) {
-            errors.displayName = 'Password should be at least 10 characters!';
+            errors.password = 'Password should be at least 10 characters!';
         }
         
         if (props.authMode === 'signup') {
@@ -93,7 +94,7 @@ export default withFormik({
         return errors;
     },
     handleSubmit: (values, { props }) => {
-
+        props.authMode === 'login' ? props.login(values) : props.signup(values)
     },
 })(AuthForm);
 

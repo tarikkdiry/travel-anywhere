@@ -19,26 +19,24 @@ const SelectScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.top}>
-                <TouchableOpacity 
-                    activeOpacity={0.1}
-                    underlayColor="#DDDDDD"
-                    style={styles.arrow}
-                    onPress={() => {
-                        navigation.pop();
+            <TouchableOpacity 
+                activeOpacity={0.1}
+                underlayColor="#DDDDDD"
+                style={styles.arrow}
+                onPress={() => {
+                    navigation.pop();
                 }}>
-                    <Image 
-                        source={BackArrow}
-                        style={styles.arrow}
-                    />
-                </TouchableOpacity>
-            </View>
-            <View style={styles.bottom}>
-            <Card 
-                title={cardData[generateRandomIndex()].title}
-                description={cardData[generateRandomIndex()].description}
-            />
-            </View>
+                <Image 
+                    source={BackArrow}
+                    style={styles.arrow}
+                />
+            </TouchableOpacity>
+            <View style={styles.card}>
+                <Card 
+                    title={cardData[generateRandomIndex()].title}
+                    description={cardData[generateRandomIndex()].description}
+                />
+            </View> 
         </View>
     )
 }
@@ -49,8 +47,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: '#03658C',
         padding: 20
-        // justifyContent: 'center',
-        // alignItems: 'flex-start',
     },
     text: {
         fontSize: 40, 
@@ -58,20 +54,14 @@ const styles = StyleSheet.create({
         fontFamily: 'regular'
     },
     arrow: {
-        // alignItems: 'flex-start',
-        // justifyContent: 'flex-start',
         height: 50,
         width: 50,
         tintColor: 'white',
+        marginTop: '20%'
     },
-    top: {
+    card: {
         flex: 1,
-        // padding: '10%',
-        alignItems: 'flex-start',
-        justifyContent: 'center'
-    }, 
-    bottom: {
-        flex: 2
+        marginTop: '50%'
     }
 });
 
