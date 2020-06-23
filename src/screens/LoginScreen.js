@@ -8,13 +8,6 @@ import {login, signup, subscribeToAuthChanges} from '../api/CardsApi';
 class LoginScreen extends Component {
     constructor(props) {
         super(props);
-        // this.state = {
-        //     //STATES
-        //     route: props.route,
-        //     navigation: props.navigation,
-        //     // AUTH
-        //     authMode: 'login'
-        // };
     }
 
     // _unsubscribe = null;
@@ -43,18 +36,6 @@ class LoginScreen extends Component {
         }));
     }
 
-    // FOR AUTH FORM
-    /*
-    render() {
-        return (
-            <AuthForm
-                authMode={this.state.authMode}
-                switchAuthMode={this.switchAuthMode}
-            />
-        );
-    }
-    */
-
     render() {
         return (
             <View style={styles.container}>
@@ -66,15 +47,6 @@ class LoginScreen extends Component {
                         authMode={this.state.authMode}
                         switchAuthMode={this.switchAuthMode}
                     />
-                <Button 
-                    title="Submit"
-                    color="white"
-                    onPress={() => {
-                        this.props.navigation.push('Welcome', {
-
-                        })
-                    }}
-                />
                 </View>
             </View>
         );
@@ -87,12 +59,9 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: '#F2884B',
         justifyContent: 'center',
-        // alignItems: 'center'
     },
     authForm: {
         flex: 1,
-        // justifyContent: 'center',
-        // alignItems: 'center'
     },
     text: {
         fontSize: 40, 
@@ -105,7 +74,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     top: {
-        // flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: '10%',

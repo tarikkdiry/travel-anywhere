@@ -5,27 +5,34 @@ import { withFormik } from 'formik';
 
 const AuthForm = (props) => {
 
-    displayNameInput = (
+    userNameInput = (
         <View style={styles.container}> 
             <TextInput 
+                autoCapitalize="none"
+                autoCorrect={false}
                 style={styles.form}
-                onChangeText={text => props.setFieldValue('displayName', text)}
+                onChangeText={text => props.setFieldValue('userName', text)}
                 placeholder='Display Name'
              />
-             <Text style={styles.validationText}>{props.errors.displayName}</Text>
+             <Text style={styles.validationText}>{props.errors.userName}</Text>
         </View>
     );
 
     return (
         <View style={styles.container}> 
-            {props.authMode === 'signup' ? this.displayNameInput : null}
+            {/* CHECK IF WE ARE SIGNING UP. IF SO, SHOW THE USER NAME OPTION */}
+            {props.authMode === 'signup' ? this.userNameInput : null}
             <TextInput 
+                autoCapitalize="none"
+                autoCorrect={false}
                 style={styles.form}
                 onChangeText={text => props.setFieldValue('email', text)}
                 placeholder='Email'
              />
              <Text style={styles.validationText}>{props.errors.email}</Text>
              <TextInput 
+                autoCapitalize="none"
+                autoCorrect={false}
                 style={styles.form}
                 onChangeText={text => props.setFieldValue('password', text)}
                 placeholder='Password'
@@ -39,7 +46,7 @@ const AuthForm = (props) => {
              <Button 
                 onPress={() => props.switchAuthMode()}
                 buttonStyle={styles.button}
-                title={props.authMode === 'login' ? 'Sign Up' : 'Login'}
+                title={props.authMode === 'login' ? 'New? Sign Up!' : 'Back to Login'}
              />
         </View>
     );
@@ -47,11 +54,7 @@ const AuthForm = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
-        // flexDirection: 'column',
-        // justifyContent: 'center',
-        alignItems: 'center'
-        
+        alignItems: 'center',
     },
     form: {
         width: 300,
@@ -60,8 +63,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1
     },
     validationText: {
-        alignItems: 'center'
-    }
+        alignItems: 'center',
+        color: 'white'
+    },
 });
 
 export default withFormik({
@@ -73,9 +77,10 @@ export default withFormik({
             errors.email = 'Email Required';
         } else if (!values.email) {
             errors.email = 'Email Required';
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
-            errors.email = 'Invalid Email Address';
         }
+        // } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+        //     errors.email = 'Invalid Email Address';
+        // }
 
         if (!values.password) {
             errors.password = 'Password Required';
@@ -84,13 +89,12 @@ export default withFormik({
         }
         
         if (props.authMode === 'signup') {
-            if (!values.displayName) {
-                errors.displayName = 'Display Name Required'
-            } else if (values.displayName.length < 5) {
-                errors.displayName = 'Display Name should be at least 5 characters!';
+            if (!values.userName) {
+                errors.userName = 'Display Name Required'
+            } else if (values.userName.length < 5) {
+                errors.userName = 'Display Name should be at least 5 characters!';
             }
         }
-
         return errors;
     },
     handleSubmit: (values, { props }) => {

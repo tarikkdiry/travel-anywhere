@@ -9,7 +9,7 @@ export function signup({ email, password, displayName }) {
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then((userInfo) => {
         console.log(userInfo)
-        userInfo.user.updateProfile({ displayName: displayName.trim() })
+        userInfo.user.updateProfile({ displayName: displayName })
         .then(() => { 
 
         })
@@ -31,28 +31,29 @@ export function signout(onSignedOut) {
     })
 }
 
-export function addCard(card, addComplete) {
-    firebase.firestore()
-    .collection('cards')
-    .add({
-        title: card.title,
-        description: card.description,
-        category: card.category
-    }).then((data) => addComplete(data))
-    .catch((error) => console.log(error));
-}
+// FOR POSSIBLY ADDING CUSTOM CARDS
+// export function addCard(card, addComplete) {
+//     firebase.firestore()
+//     .collection('cards')
+//     .add({
+//         title: card.title,
+//         description: card.description,
+//         category: card.category
+//     }).then((data) => addComplete(data))
+//     .catch((error) => console.log(error));
+// }
 
-export async function getCard(getCards) {
-    var cardList = [];
+// export async function getCard(getCards) {
+//     var cardList = [];
 
-    var snapshot = await firebase.firestore()
-    .collection('cards')
-    .orderBy('category')
-    .get()
+//     var snapshot = await firebase.firestore()
+//     .collection('cards')
+//     .orderBy('category')
+//     .get()
 
-    snapshot.forEach((doc) => {
-        cardList.push(doc.data())
-    });
+//     snapshot.forEach((doc) => {
+//         cardList.push(doc.data())
+//     });
 
-    getCards(cardList);
-}
+//     getCards(cardList);
+// }
