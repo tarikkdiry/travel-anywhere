@@ -1,23 +1,27 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const CardFront = () => {
-    const cardMessages = [
-        {
-            "message": "Click me!"
-        },
-        {
-            "message": "Are you ready?"
-        },
-        {
-            "message": "Flip me!!!"
-        }
-    ]
+// export const cardMessages = [
+//     "What's it going to be?",
+//     "Are you ready?",
+//     "Flip me!",
+//     "Fun, right?",
+//     "Adventure!",
+//     ":)"
+// ];
 
+export const cardMessageGenerate = () => {
+    const length = cardMessages.length;
+    const randNum = Math.floor(Math.random() * length);
+    return cardMessages[randNum];
+};
+
+const CardFront = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>
-                {cardMessages[1].message}
+                {/* {cardMessageGenerate()} */}
+                Anywhere
             </Text>
         </View>
     )
@@ -30,7 +34,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 35,
         fontFamily: 'regular',
-        color: 'white'
+        color: '#03658C'
     }
 });
 
