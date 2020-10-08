@@ -49,19 +49,19 @@ class Card extends Component {
         }).start();
     }
 
-    checkSelected() {
+    checkSelected() { // set card's flip state as flipped
         this.setState({ userSelected: true})
     }
 
     render() {
 
-        const frontAnimatedStyle = {
+        const frontAnimatedStyle = { // rotate
             transform: [
                 { rotateX: this.frontInterpolate }
             ]
         }
 
-        const backAnimatedStyle = {
+        const backAnimatedStyle = { // rotate back
             transform: [
                 { rotateX: this.backInterpolate }
             ]
@@ -71,8 +71,8 @@ class Card extends Component {
             <TouchableOpacity 
                 onPress={() => {
                     if (this.state.userSelected == false) {
-                        this.flipCard();
-                        this.checkSelected();
+                        this.flipCard(); // perform the flip
+                        this.checkSelected(); // mark this card as flipped already
                     }
                 }}>
                 <View style={styles.container}>
