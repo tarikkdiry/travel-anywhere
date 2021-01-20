@@ -1,0 +1,42 @@
+[
+    {
+        "title": "Ask a Local",
+        "description": "Ask the nearest local (in their native language, of course), where they like to eat. Go there!",
+        "category": "Food"
+    },
+    {
+        "title": "Coffee? Coffee? Coffee...",
+        "description": "Grab a coffee of your choice from the third coffee shop you come across.",
+        "category": "Food"
+    },
+    {
+        "title": "Lunch With a View",
+        "description": "Grab some lunch, look up the nearest viewpoint, head there, now you have lunch with a view!",
+        "category": "Food"
+    },
+    {
+        "title": "Fast Food",
+        "description": "Grab something from the nearest fast-food chain that is unique to the country you're in.",
+        "category": "Food"
+    },
+    {
+        "title": "When in...",
+        "description": "Make sure you go the whole day only eating when the locals typically do.",
+        "category": "Food"
+    },
+    {
+        "title": "Grocery Store",
+        "description": "Purchase a regional snack (like a bag of chips or something) from the local grocery store. Bonus points if this can't be found anywhere else.",
+        "category": "Food"
+    },
+    {
+        "title": "Chef's Special",
+        "description": "When ordering, ask your server to bring you what they recommend.",
+        "category": "Food"
+    },
+    {
+        "title": "Order Up",
+        "description": "Order food all day in the local language.",
+        "category": "Food"
+    }
+]
