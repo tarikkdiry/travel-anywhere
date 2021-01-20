@@ -15,6 +15,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './src/screens/LoginScreen';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import SelectScreen from './src/screens/SelectScreen';
+import CreateGameScreen from './src/screens/CreateGame';
+import JoinGameScreen from './src/screens/JoinGame';
 
 const Stack = createStackNavigator();
 
@@ -66,6 +68,20 @@ export default function App() {
         <Stack.Screen 
           name="Welcome"
           component={WelcomeScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="CreateGame"
+          component={CreateGameScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="JoinGame"
+          component={JoinGameScreen}
           options={{
             headerShown: false,
           }}

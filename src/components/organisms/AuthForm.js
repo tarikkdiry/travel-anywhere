@@ -54,7 +54,7 @@ const AuthForm = (props) => {
             <View style={styles.buttons}>
                 <View style={styles.top}>
                     <Button 
-                        type="Outline button"
+                        type="outline"
                         titleStyle={{color: 'white'}}
                         onPress={() => handleSubmitHandler()}
                         buttonStyle={styles.login}
@@ -63,7 +63,7 @@ const AuthForm = (props) => {
                 </View>
                 <View style={styles.bottom}>
                     <Button 
-                        type="Clear button"
+                        type="clear"
                         color="white"
                         titleStyle={{color: 'white'}}
                         onPress={() => switchAuthModeHandler()}
