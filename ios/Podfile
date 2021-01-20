@@ -7,9 +7,6 @@ target 'travelanywhere' do
   rnPrefix = "../node_modules/react-native"
 
   # React Native and its dependencies
-  pod 'Firebase/Firestore'
-  pod 'Firebase/Core'
-  pod 'Firebase/Auth'
   pod 'FBLazyVector', :path => "#{rnPrefix}/Libraries/FBLazyVector"
   pod 'FBReactNativeSpec', :path => "#{rnPrefix}/Libraries/FBReactNativeSpec"
   pod 'RCTRequired', :path => "#{rnPrefix}/Libraries/RCTRequired"

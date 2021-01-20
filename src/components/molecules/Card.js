@@ -1,38 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { StyleSheet, Text, View, Animated, TouchableOpacity } from 'react-native';
 import CardFront from '../atoms/CardFront';
 import CardBack from '../atoms/CardBack';
 
-// const Card = ({ title, description }) => {
-//     return (
-//         <View style={styles.container}>
-//             <View style={styles.flipCard}>
-//                 <View style={styles.title}>
-//                     <Title 
-//                         title={title}
-//                     />
-//                 </View>
-//             </View>
-
-//             <View style={[styles.flipCard, styles.flipCardBack]}>
-//                 <View style={styles.title}>
-//                     <Title 
-//                         title={title}
-//                     />
-//                 </View>
-//                 <View style={styles.description}>
-//                     <Description
-//                         description={description}
-//                     />
-//                 </View>
-//             </View>
-//         </View>
-//     )
-// };
-
 class Card extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            userSelected: false
+        };
     }
 
     // DEPRECATED, REFACTOR SOON
@@ -73,21 +49,32 @@ class Card extends Component {
         }).start();
     }
 
+    checkSelected() { // set card's flip state as flipped
+        this.setState({ userSelected: true})
+    }
+
     render() {
-        const frontAnimatedStyle = {
+
+        const frontAnimatedStyle = { // rotate
             transform: [
                 { rotateX: this.frontInterpolate }
             ]
         }
 
-        const backAnimatedStyle = {
+        const backAnimatedStyle = { // rotate back
             transform: [
                 { rotateX: this.backInterpolate }
             ]
         }
 
         return (
-            <TouchableOpacity onPress={() => this.flipCard()}>
+            <TouchableOpacity 
+                onPress={() => {
+                    if (this.state.userSelected == false) {
+                        this.flipCard(); // perform the flip
+                        this.checkSelected(); // mark this card as flipped already
+                    }
+                }}>
                 <View style={styles.container}>
                     <View>
                         <Animated.View style={[styles.flipCard, frontAnimatedStyle]}>
@@ -110,6 +97,7 @@ class Card extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingBottom: 10
     },
     description: {
         marginTop: 20
@@ -118,7 +106,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         top: 0,
-        position: 'absolute',
+        // position: 'absolute', // USE THIS TO CREATE CARD STACK VIEW
         backfaceVisibility: 'hidden',
         backgroundColor: '#F2913D',
         height: 200,
@@ -138,7 +126,6 @@ const styles = StyleSheet.create({
         elevation: 1
     },
     flipCardBack: {
-        // alignItems: 'center',
         top: 0,
         position: 'absolute',
         backfaceVisibility: 'hidden',

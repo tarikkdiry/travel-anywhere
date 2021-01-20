@@ -3,40 +3,51 @@
     "start": "react-native start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "jest"
   },
   "dependencies": {
+    "expo": "~37.0.3",
+    "expo-splash-screen": "^0.2.3",
+    "expo-updates": "~0.2.0",
+    "react": "~16.9.0",
+    "react-dom": "~16.9.0",
+    "react-native": "~0.61.5",
+    "react-native-gesture-handler": "~1.6.0",
+    "react-native-reanimated": "~1.7.0",
+    "react-native-screens": "~2.2.0",
+    "react-native-unimodules": "~0.9.0",
+    "react-native-web": "~0.11.7",
     "@react-native-community/masked-view": "0.1.6",
     "@react-native-firebase/app": "^7.2.1",
     "@react-navigation/native": "^5.5.1",
     "@react-navigation/stack": "^5.5.1",
-    "expo": "~37.0.3",
-    "expo-splash-screen": "^0.2.3",
-    "expo-updates": "~0.2.0",
     "firebase": "7.9.0",
     "formik": "^2.1.4",
+    "jest-fetch-mock": "^3.0.3",
     "native-base": "^2.13.12",
-    "react": "~16.9.0",
-    "react-dom": "~16.9.0",
-    "react-native": "~0.61.5",
+    "react-native-elements": "^2.0.2",
     "react-native-firebase": "^5.6.0",
-    "react-native-gesture-handler": "~1.6.0",
     "react-native-localize": "^1.4.0",
-    "react-native-reanimated": "~1.7.0",
     "react-native-safe-area-context": "0.7.3",
-    "react-native-screens": "~2.2.0",
-    "react-native-unimodules": "~0.9.0",
-    "react-native-web": "~0.11.7",
+    "react-native-testing-library": "^2.1.0",
     "react-navigation": "^4.3.9"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
     "babel-jest": "~25.2.6",
-    "jest": "~25.2.6",
-    "react-test-renderer": "~16.9.0",
+    "jest": "^25.2.7",
+    "react-test-renderer": "^16.9.0",
     "babel-preset-expo": "~8.1.0"
   },
   "private": true,
   "name": "travel-anywhere",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "jest": {
+    "preset": "jest-react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base)"
+    ],
+    "automock": false
+  }
 }

@@ -1,5 +1,5 @@
-import React, { Component, useState } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import AuthForm from '../components/organisms/AuthForm';
 
 // API
@@ -10,18 +10,12 @@ class LoginScreen extends Component {
         super(props);
     }
 
-    // _unsubscribe = null;
-
     state = {
-        authMode: 'login'
+        authMode: 'Login' // LOGIN || SIGNUP
     }
 
     componentDidMount() {
         subscribeToAuthChanges(this.onAuthStateChanged);
-    }
-
-    componentWillUnmount() {
-        // this._unsubscribe()
     }
 
     onAuthStateChanged = (user) => {
@@ -32,14 +26,14 @@ class LoginScreen extends Component {
 
     switchAuthMode = () => {
         this.setState(prevState => ({
-            authMode: prevState.authMode === 'login' ? 'signup' : 'login'
+            authMode: prevState.authMode === 'Login' ? 'Signup' : 'Login' // Switching modes based on previous mode state
         }));
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.text}>Login</Text> 
+                <Text style={styles.text}>{this.state.authMode}</Text> 
                 <View style={styles.authForm}>
                     <AuthForm 
                         login={login}
