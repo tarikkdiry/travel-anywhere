@@ -28,9 +28,10 @@ const WelcomeScreen = ({ route, navigation }) => {
             />
             </TouchableOpacity>
             <Text style={styles.text}>Travel Anywhere</Text> 
-            <View style={styles.button}> 
+            <View style={styles.buttons}> 
                 <Button 
                     title="Create Game"
+                    style={styles.button}
                     color="white"
                     onPress={() => {
                         navigation.push('CreateGame', {
@@ -48,7 +49,7 @@ const WelcomeScreen = ({ route, navigation }) => {
                     }}
                 />
                 <Button 
-                    title="Let's play!"
+                    title="Single Player"
                     color="white"
                     onPress={() => {
                         navigation.push('Select', {
@@ -81,10 +82,15 @@ const styles = StyleSheet.create({
         tintColor: 'white',
         marginTop: '20%'
     },
-    button: {
+    buttons: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        // height: 30,
+        // backgroundColor: 'blue'
+    },
+    button: {
+        
     }
 });
 

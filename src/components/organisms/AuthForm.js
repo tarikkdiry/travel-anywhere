@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
         width: 300,
         height: 50,
         borderColor: 'white',
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
+        color: 'white'
     },
     errorText: {
         alignItems: 'center',
