@@ -17,6 +17,7 @@ import WelcomeScreen from './src/screens/WelcomeScreen';
 import SelectScreen from './src/screens/SelectScreen';
 import CreateGameScreen from './src/screens/CreateGame';
 import JoinGameScreen from './src/screens/JoinGame';
+import LobbyScreen from './src/screens/LobbyScreen';
 
 const Stack = createStackNavigator();
 
@@ -63,6 +64,7 @@ export default function App() {
           component={LoginScreen}
           options={{
             headerShown: false,
+            gestureEnabled: false
           }}
         />
         <Stack.Screen 
@@ -70,6 +72,7 @@ export default function App() {
           component={WelcomeScreen}
           options={{
             headerShown: false,
+            gestureEnabled: false
           }}
         />
         <Stack.Screen 
@@ -77,6 +80,7 @@ export default function App() {
           component={CreateGameScreen}
           options={{
             headerShown: false,
+            gestureEnabled: false
           }}
         />
         <Stack.Screen 
@@ -89,6 +93,13 @@ export default function App() {
         <Stack.Screen 
           name="Select"
           component={SelectScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="Lobby"
+          component={LobbyScreen}
           options={{
             headerShown: false,
           }}

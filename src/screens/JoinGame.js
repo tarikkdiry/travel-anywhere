@@ -1,38 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
 import BackArrow from '../../assets/back_arrow.png';
 import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const JoinGameScreen = ({ route, navigation }) => {
+    // firebase.database() = firebase.database();
     const [playerName, setPlayerName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [gameCode, setGameCode]  = useState('');
     const [error, setError] = useState('');
     const placeholderColor = "#808080"; // or #949494
 
+    useEffect(() => {
+        return() => {
+            setPlayerName('');
+            setIsLoading(false);
+        }
+    }, []);
+
     const joinGame = (session, name) => {
-        firebase.database().ref('players/' + session).set({
-            playerName: name,
-            host: name,
-            status: 'lobby',
-            timestamp: Date.now(),
-            players: 1
-        });
+        if (canJoinGame(session)) {
+            firebase.database().ref('players/' + session).set({
+                playerName: name,
+                host: name,
+                status: 'lobby',
+                timestamp: Date.now(),
+                // players: 1
+            }).then(
+                navigation.navigate('Lobby', {
+                    
+                })
+            );
+        }
     };
 
     const canJoinGame = (session) => {
-        console.log('Skrrt Skrrrrrrrt Skrttttttttt ;)');
         try {
             if (!doesGameExist(session)) {
                 console.log(`Game ${session} does not exist!`);
                 setIsLoading(false);
                 setError('Sorry, this game does not exist. :(');
                 return false;
-            } 
-            // Check here if the game is in session. If so, don't allow entry
-            setIsLoading(true);
-            return true;
+            } else if (isGameInSession(session)) {
+                console.log("Works!");
+            } else { // Check here if the game is in session. If so, don't allow entry
+                setIsLoading(true);
+                return true;
+            }
+            
         } catch {
             console.log(`Oh no! Can't find ${session} :(`);
             setIsLoading(false);
@@ -41,14 +57,38 @@ const JoinGameScreen = ({ route, navigation }) => {
     };
 
     // Check if game session exists and is active
-    const doesGameExist = (session) => {
-        firebase.database().ref('game/' + session).once('value', snapshot => {
-            if (snapshot.exists()) {
-                return true;
-            } else {
-                return false;
-            }
-        })
+    const doesGameExist = () => {        
+        // console.log(gameCode);
+        // if(gameCode === findGame.key) {
+        //     // console.log(findGame.key);
+        //     console.log("Found it!");
+        // } else {
+        //     console.log("Nope!");
+        // }
+        // firebase.database().ref().once('value', snapshot => {
+        // if (snapshot.val() == session) {
+        //     console.log('Exists!');
+        //     console.log(snapshot.val());
+        //     return true;
+        // } else {
+        //     console.log(snapshot.val());
+        //     console.log('Does not exist!');
+        //     return false;
+        // }})
+    };
+
+    const isGameInSession = (session) => {
+        console.log(session);
+        // firebase.database()('game/session/' + status).once('value', snapshot => {
+        //     if (snapshot.val() !== 'lobby') {
+        //         console.log('Good!');
+        //         console.log(snapshot.val());
+        //         return false;
+        //     } else {
+        //         console.log(snapshot.val());
+        //         return true;
+        //     }
+        // })
     };
 
     return (
@@ -90,7 +130,9 @@ const JoinGameScreen = ({ route, navigation }) => {
                         title="Continue"
                         color="white"
                         onPress={() => {
-                            joinGame(gameCode, playerName);
+                            // joinGame(gameCode, playerName);
+                            doesGameExist(gameCode);
+                            // isGameInSession(gameCode);
                         }}
                     />
                 </View>

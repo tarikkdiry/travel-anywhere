@@ -10,7 +10,7 @@ const WelcomeScreen = ({ route, navigation }) => {
 
     onSignedOut = () => {
         console.log('Signed out!');
-        navigation.push('Login'); // REFACTOR 
+        navigation.popToTop(); // REFACTOR 
     }
 
     return (

@@ -11,6 +11,7 @@ const CreateGameScreen = ({ route, navigation }) => {
     const placeholderColor = "#808080"; // or #949494
 
     const createGame = (session, name) => {
+        this.db = firebase.database();
         let newGameCode = generateGameCode(session);
         // Determine if the new game exists, if not => proceed
         doesGameExist(session) ? createGameHelper(newGameCode, name) : createGameHelper(session, name);
@@ -24,19 +25,33 @@ const CreateGameScreen = ({ route, navigation }) => {
         // Set status to waiting in order to have other players join
 
     const createGameHelper = (session, name) => {
-        firebase.database().ref('game/' + session).set({
+        this.db.ref('game/' + session).set({
             playerName: name,
             host: name,
             status: 'lobby',
             timestamp: Date.now(),
             players: 1
         });
+        this.db.ref('players/' + session).set({
+            playerName: name,
+            host: name,
+            // status: 'lobby',
+            // timestamp: Date.now(),
+            // players: 1
+        }).then(
+            // Move on to lobby page
+            navigation.navigate('Lobby', {
+                session: session,
+                hostName: hostName
+            }),
+            console.log("Created!")
+        )
         setGameCode(session);
     };
 
     // Check if game session exists and is active
     const doesGameExist = (session) => {
-        firebase.database().ref('game/' + session).once('value', snapshot => {
+        this.db.ref('game/' + session).once('value', snapshot => {
             if (snapshot.exists()) {
                 return true;
             } else {
@@ -58,8 +73,10 @@ const CreateGameScreen = ({ route, navigation }) => {
         return result;
     };
 
+    // Move to shared folder
     const deleteGame = (gameCode) => {
-        firebase.database().ref('game/' + gameCode).remove();
+        this.db.ref('game/' + gameCode).remove();
+        this.db.ref('players/' + gameCode).remove();
     };
 
     return (
