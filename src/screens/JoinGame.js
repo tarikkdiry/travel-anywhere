@@ -3,9 +3,9 @@ import { StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
 import BackArrow from '../../assets/back_arrow.png';
 import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Loading from '../components/organisms/LoadingScreen';
 
 const JoinGameScreen = ({ route, navigation }) => {
-    // firebase.database() = firebase.database();
     const [playerName, setPlayerName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [gameCode, setGameCode]  = useState('');
@@ -16,16 +16,30 @@ const JoinGameScreen = ({ route, navigation }) => {
         return() => {
             setPlayerName('');
             setIsLoading(false);
+            setError('');
         }
     }, []);
 
-    const joinGame = (session, name) => {
-        if (canJoinGame(session)) {
+    const joinGame = async (session, name) => {
+        if (name.length < 1) {
+            console.log('You must enter a name!');
+            setError('You must enter a name!');
+            return;
+        }
+
+        if (session.length < 4) {
+            console.log('You must enter a proper, 4 character code!');
+            setError('You must enter a proper, 4 character code!');
+            return;
+        }
+
+        if (await canJoinGame(session)) {
+            console.log('Joining game...');
             firebase.database().ref('players/' + session).set({
                 playerName: name,
                 host: name,
                 status: 'lobby',
-                timestamp: Date.now(),
+                // timestamp: Date.now(),
                 // players: 1
             }).then(
                 navigation.navigate('Lobby', {
@@ -33,65 +47,43 @@ const JoinGameScreen = ({ route, navigation }) => {
                 })
             );
         }
+            
+            
+            firebase.database().ref('players/' + session).set({
+                playerName: name,
+                host: name,
+                status: 'lobby',
+                // timestamp: Date.now(),
+                // players: 1
+            }).then(
+                navigation.navigate('Lobby', {
+                    
+                })
+            );
     };
 
-    const canJoinGame = (session) => {
+    const canJoinGame = async (session) => {
+        console.log('Checking if the game is joinable...');
         try {
-            if (!doesGameExist(session)) {
-                console.log(`Game ${session} does not exist!`);
+            let snapshot = await firebase.database().ref(`game`).orderByKey().equalTo(session).once('value');
+            if(snapshot.val() == null) {
+                console.log(`${session} is INVALID`);
                 setIsLoading(false);
-                setError('Sorry, this game does not exist. :(');
+                setError('This game cannot be joined. :(');
                 return false;
-            } else if (isGameInSession(session)) {
-                console.log("Works!");
-            } else { // Check here if the game is in session. If so, don't allow entry
-                setIsLoading(true);
-                return true;
-            }
-            
+            } 
+            console.log('Game found!');
+            setIsLoading(true);
+            return true;
         } catch {
-            console.log(`Oh no! Can't find ${session} :(`);
+            console.log('Could not check if the game exists. :(');
             setIsLoading(false);
             return false;
         }
     };
-
-    // Check if game session exists and is active
-    const doesGameExist = () => {        
-        // console.log(gameCode);
-        // if(gameCode === findGame.key) {
-        //     // console.log(findGame.key);
-        //     console.log("Found it!");
-        // } else {
-        //     console.log("Nope!");
-        // }
-        // firebase.database().ref().once('value', snapshot => {
-        // if (snapshot.val() == session) {
-        //     console.log('Exists!');
-        //     console.log(snapshot.val());
-        //     return true;
-        // } else {
-        //     console.log(snapshot.val());
-        //     console.log('Does not exist!');
-        //     return false;
-        // }})
-    };
-
-    const isGameInSession = (session) => {
-        console.log(session);
-        // firebase.database()('game/session/' + status).once('value', snapshot => {
-        //     if (snapshot.val() !== 'lobby') {
-        //         console.log('Good!');
-        //         console.log(snapshot.val());
-        //         return false;
-        //     } else {
-        //         console.log(snapshot.val());
-        //         return true;
-        //     }
-        // })
-    };
-
+    
     return (
+        
         <View style={styles.container}>
             <View style={styles.top}>
                 <TouchableOpacity 
@@ -130,9 +122,7 @@ const JoinGameScreen = ({ route, navigation }) => {
                         title="Continue"
                         color="white"
                         onPress={() => {
-                            // joinGame(gameCode, playerName);
-                            doesGameExist(gameCode);
-                            // isGameInSession(gameCode);
+                            joinGame(gameCode, playerName);
                         }}
                     />
                 </View>
