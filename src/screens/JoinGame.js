@@ -81,53 +81,105 @@ const JoinGameScreen = ({ route, navigation }) => {
             return false;
         }
     };
-    
+
     return (
-        
         <View style={styles.container}>
-            <View style={styles.top}>
-                <TouchableOpacity 
-                    activeOpacity={0.1}
-                    underlayColor="#DDDDDD"
-                    style={styles.arrow}
-                    onPress={() => {
-                        navigation.pop()
-                    }}>
-                <Image 
-                    source={BackArrow}
-                    style={styles.arrow}
-                />
-                </TouchableOpacity>
-                <Text style={styles.text}>Join Game</Text> 
-            </View>
-            <View style={styles.bottom}>
-                <TextInput 
-                    style={styles.input} 
-                    onChangeText={name => setPlayerName(name.toUpperCase())} 
-                    value={playerName}
-                    placeholder="Name"
-                    placeholderTextColor={placeholderColor}
-                    maxLength={8}
-                />
-                <TextInput 
-                    style={styles.input} 
-                    onChangeText={code => setGameCode(code.toUpperCase())} 
-                    value={gameCode}
-                    placeholder="Game Code"
-                    placeholderTextColor={placeholderColor}
-                    maxLength={4}
-                />
-                <View style={styles.button}> 
-                    <Button 
-                        title="Continue"
-                        color="white"
-                        onPress={() => {
-                            joinGame(gameCode, playerName);
-                        }}
-                    />
-                </View>
-                </View>
+            {
+                isLoading ? (
+                    <View>
+                        <Loading text="Loading Game!"/>
+                    </View> 
+                ) : (
+                    <View style={styles.container}>
+                        <View style={styles.top}>
+                            <TouchableOpacity 
+                                activeOpacity={0.1}
+                                underlayColor="#DDDDDD"
+                                style={styles.arrow}
+                                onPress={() => {
+                                    navigation.pop()
+                                }}>
+                            <Image 
+                                source={BackArrow}
+                                style={styles.arrow}
+                            />
+                            </TouchableOpacity>
+                            <Text style={styles.text}>Join Game</Text> 
+                        </View>
+                        <View style={styles.bottom}>
+                            <TextInput 
+                                style={styles.input} 
+                                onChangeText={name => setPlayerName(name.toUpperCase())} 
+                                value={playerName}
+                                placeholder="Name"
+                                placeholderTextColor={placeholderColor}
+                                maxLength={8}
+                            />
+                            <TextInput 
+                                style={styles.input} 
+                                onChangeText={code => setGameCode(code.toUpperCase())} 
+                                value={gameCode}
+                                placeholder="Game Code"
+                                placeholderTextColor={placeholderColor}
+                                maxLength={4}
+                            />
+                            <View style={styles.button}> 
+                                <Button 
+                                    title="Continue"
+                                    color="white"
+                                    onPress={() => {
+                                        joinGame(gameCode, playerName);
+                                    }}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                )}
         </View>
+        // <View style={styles.container}>
+        //     <View style={styles.top}>
+        //         <TouchableOpacity 
+        //             activeOpacity={0.1}
+        //             underlayColor="#DDDDDD"
+        //             style={styles.arrow}
+        //             onPress={() => {
+        //                 navigation.pop()
+        //             }}>
+        //         <Image 
+        //             source={BackArrow}
+        //             style={styles.arrow}
+        //         />
+        //         </TouchableOpacity>
+        //         <Text style={styles.text}>Join Game</Text> 
+        //     </View>
+        //     <View style={styles.bottom}>
+        //         <TextInput 
+        //             style={styles.input} 
+        //             onChangeText={name => setPlayerName(name.toUpperCase())} 
+        //             value={playerName}
+        //             placeholder="Name"
+        //             placeholderTextColor={placeholderColor}
+        //             maxLength={8}
+        //         />
+        //         <TextInput 
+        //             style={styles.input} 
+        //             onChangeText={code => setGameCode(code.toUpperCase())} 
+        //             value={gameCode}
+        //             placeholder="Game Code"
+        //             placeholderTextColor={placeholderColor}
+        //             maxLength={4}
+        //         />
+        //         <View style={styles.button}> 
+        //             <Button 
+        //                 title="Continue"
+        //                 color="white"
+        //                 onPress={() => {
+        //                     joinGame(gameCode, playerName);
+        //                 }}
+        //             />
+        //         </View>
+        //         </View>
+        // </View>
     )
 };
 
