@@ -8,10 +8,10 @@ const CreateGameScreen = ({ route, navigation }) => {
     const [hostName, setHostName] = useState(''); // Potentially use login data
     const [gameCode, setGameCode] = useState('') // Four Character code
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const placeholderColor = "#808080"; // or #949494
 
     const createGame = (session, name) => {
-        this.db = firebase.database();
         let newGameCode = generateGameCode(session);
         // Determine if the new game exists, if not => proceed
         doesGameExist(session) ? createGameHelper(newGameCode, name) : createGameHelper(session, name);
@@ -24,34 +24,42 @@ const CreateGameScreen = ({ route, navigation }) => {
         // Assign current user to host
         // Set status to waiting in order to have other players join
 
-    const createGameHelper = (session, name) => {
-        this.db.ref('game/' + session).set({
-            playerName: name,
-            host: name,
-            status: 'lobby',
-            timestamp: Date.now(),
-            players: 1
-        });
-        this.db.ref('players/' + session).set({
-            playerName: name,
-            host: name,
-            // status: 'lobby',
-            // timestamp: Date.now(),
-            // players: 1
-        }).then(
-            // Move on to lobby page
-            navigation.navigate('Lobby', {
-                session: session,
-                hostName: hostName
-            }),
-            console.log("Created!")
-        )
-        setGameCode(session);
-    };
-
+    const createGameHelper = async (session, name) => {
+        try {
+            await firebase.database().ref('game/' + session).set({
+                playerName: name,
+                host: name,
+                status: 'lobby',
+                timestamp: Date.now(),
+                players: 1
+            });
+            console.log('Game session created!');
+            await firebase.database().ref('players/' + session).set({
+                playerName: name,
+                host: name,
+                // status: 'lobby',
+                // timestamp: Date.now(),
+                // players: 1
+            })
+            // console.log(`${name} has joined!`)
+            .then(
+                // Move on to lobby page
+                navigation.navigate('Lobby', {
+                    session: session,
+                    hostName: hostName
+                }),
+                console.log(`${name} is on their way to the lobby!`)
+            )
+            setGameCode(session);
+        } catch (err) {
+            setIsLoading(false);
+            console.log("Sorry! Can't create game... -> " + err.message);
+            // deleteGame(session);
+        }
+    }
     // Check if game session exists and is active
     const doesGameExist = (session) => {
-        this.db.ref('game/' + session).once('value', snapshot => {
+        firebase.database().ref('game/' + session).once('value', snapshot => {
             if (snapshot.exists()) {
                 return true;
             } else {
@@ -75,8 +83,9 @@ const CreateGameScreen = ({ route, navigation }) => {
 
     // Move to shared folder
     const deleteGame = (gameCode) => {
-        this.db.ref('game/' + gameCode).remove();
-        this.db.ref('players/' + gameCode).remove();
+        firebase.database().ref('game/' + gameCode).remove();
+        firebase.database().ref('players/' + gameCode).remove();
+        console.log(`${gameCode} has been removed!`);
     };
 
     return (

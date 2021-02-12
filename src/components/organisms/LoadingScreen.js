@@ -3,11 +3,11 @@ import { StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
 
 const LoadingScreen = ({ text }) => {
     return(
-        <div style={styles.container}>
-            <div style={styles.loading}>
-                {text}
-            </div>
-        </div>
+        <View style={styles.container}>
+            <View style={styles.loading}>
+                <Text>{text}</Text>
+            </View>
+        </View>
     )
 };
 

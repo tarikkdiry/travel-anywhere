@@ -20,6 +20,7 @@ const JoinGameScreen = ({ route, navigation }) => {
         }
     }, []);
 
+    // STILL CREATING A NEW PLAYER SESSION EVEN WITH NO GAME
     const joinGame = async (session, name) => {
         if (name.length < 1) {
             console.log('You must enter a name!');
@@ -32,34 +33,35 @@ const JoinGameScreen = ({ route, navigation }) => {
             setError('You must enter a proper, 4 character code!');
             return;
         }
+        try {
+            if (await canJoinGame(session)) {
+                console.log(`${name} is joining the game!`);
+                firebase.database().ref('players/' + session).set({
+                    playerName: name,
+                    host: name,
+                    status: 'lobby',
+                    // timestamp: Date.now(),
+                    // players: 1
+                }).then(
+                    navigation.navigate('Lobby', {
+                        
+                    })
+                );
+            }  
+            firebase.database().ref('players/' + session).set({
+                playerName: name,
+                host: name,
+                status: 'lobby',
+                // timestamp: Date.now(),
+                // players: 1
+            }).then(
+                navigation.navigate('Lobby', {
+                    
+                })
+            );
+        } catch(err) {
 
-        if (await canJoinGame(session)) {
-            console.log('Joining game...');
-            firebase.database().ref('players/' + session).set({
-                playerName: name,
-                host: name,
-                status: 'lobby',
-                // timestamp: Date.now(),
-                // players: 1
-            }).then(
-                navigation.navigate('Lobby', {
-                    
-                })
-            );
         }
-            
-            
-            firebase.database().ref('players/' + session).set({
-                playerName: name,
-                host: name,
-                status: 'lobby',
-                // timestamp: Date.now(),
-                // players: 1
-            }).then(
-                navigation.navigate('Lobby', {
-                    
-                })
-            );
     };
 
     const canJoinGame = async (session) => {
@@ -67,7 +69,6 @@ const JoinGameScreen = ({ route, navigation }) => {
         try {
             let snapshot = await firebase.database().ref(`game`).orderByKey().equalTo(session).once('value');
             if(snapshot.val() == null) {
-                console.log(`${session} is INVALID`);
                 setIsLoading(false);
                 setError('This game cannot be joined. :(');
                 return false;
@@ -81,6 +82,10 @@ const JoinGameScreen = ({ route, navigation }) => {
             return false;
         }
     };
+
+    const leaveGame = async (session, name) => {
+        return;
+    }
 
     return (
         <View style={styles.container}>
@@ -97,6 +102,7 @@ const JoinGameScreen = ({ route, navigation }) => {
                                 underlayColor="#DDDDDD"
                                 style={styles.arrow}
                                 onPress={() => {
+                                    leaveGame(gameCode, playerName);
                                     navigation.pop()
                                 }}>
                             <Image 
