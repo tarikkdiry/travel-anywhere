@@ -17,13 +17,6 @@ const CreateGameScreen = ({ route, navigation }) => {
         doesGameExist(session) ? createGameHelper(newGameCode, name) : createGameHelper(session, name);
     };
 
-        // Keyboard.dismiss();
-        // Check here for valid inputs such as name and (possibly) card pack selection
-        // Set isLoading to true to initiate loading screen
-        // Create new game in firebase
-        // Assign current user to host
-        // Set status to waiting in order to have other players join
-
     const createGameHelper = async (session, name) => {
         try {
             await firebase.database().ref('game/' + session).set({
@@ -31,17 +24,13 @@ const CreateGameScreen = ({ route, navigation }) => {
                 host: name,
                 status: 'lobby',
                 timestamp: Date.now(),
-                players: 1
+                waiting: [name]
             });
             console.log('Game session created!');
             await firebase.database().ref('players/' + session).set({
-                playerName: name,
                 host: name,
-                // status: 'lobby',
-                // timestamp: Date.now(),
-                // players: 1
+                players: [name]
             })
-            // console.log(`${name} has joined!`)
             .then(
                 // Move on to lobby page
                 navigation.navigate('Lobby', {
@@ -54,7 +43,7 @@ const CreateGameScreen = ({ route, navigation }) => {
         } catch (err) {
             setIsLoading(false);
             console.log("Sorry! Can't create game... -> " + err.message);
-            // deleteGame(session);
+            deleteGame(session);
         }
     }
     // Check if game session exists and is active
@@ -126,7 +115,7 @@ const CreateGameScreen = ({ route, navigation }) => {
                             createGame(generateGameCode(), hostName.toUpperCase());
                         }}
                     />
-                    <Button 
+                    {/* <Button 
                         title="Reset"
                         color="white"
                         // onPress={() => {
@@ -135,7 +124,7 @@ const CreateGameScreen = ({ route, navigation }) => {
                         onPress={() => {
                             deleteGame(gameCode);
                         }}
-                    />
+                    /> */}
                 </View>
             </View>
         </View>

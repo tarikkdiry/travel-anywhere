@@ -20,7 +20,6 @@ const JoinGameScreen = ({ route, navigation }) => {
         }
     }, []);
 
-    // STILL CREATING A NEW PLAYER SESSION EVEN WITH NO GAME
     const joinGame = async (session, name) => {
         if (name.length < 1) {
             console.log('You must enter a name!');
@@ -33,32 +32,33 @@ const JoinGameScreen = ({ route, navigation }) => {
             setError('You must enter a proper, 4 character code!');
             return;
         }
+        
         try {
-            if (await canJoinGame(session)) {
-                console.log(`${name} is joining the game!`);
+            let sessionOpen = await canJoinGame(session);
+            (sessionOpen) ? (
+                console.log(`${name} is joining the game!`)
+                .then(
                 firebase.database().ref('players/' + session).set({
-                    playerName: name,
-                    host: name,
-                    status: 'lobby',
                     // timestamp: Date.now(),
                     // players: 1
                 }).then(
                     navigation.navigate('Lobby', {
                         
                     })
+                ))
+            ) : (
+                console.log("Session is not open!")   
+            ).then(() => {
+                firebase.database().ref('players/' + session).set({
+                    playerName: name,
+                    host: name,
+                    status: 'lobby',
+                }).then(
+                    navigation.navigate('Lobby', {
+                        
+                    })
                 );
-            }  
-            firebase.database().ref('players/' + session).set({
-                playerName: name,
-                host: name,
-                status: 'lobby',
-                // timestamp: Date.now(),
-                // players: 1
-            }).then(
-                navigation.navigate('Lobby', {
-                    
-                })
-            );
+            })
         } catch(err) {
 
         }
@@ -142,50 +142,6 @@ const JoinGameScreen = ({ route, navigation }) => {
                     </View>
                 )}
         </View>
-        // <View style={styles.container}>
-        //     <View style={styles.top}>
-        //         <TouchableOpacity 
-        //             activeOpacity={0.1}
-        //             underlayColor="#DDDDDD"
-        //             style={styles.arrow}
-        //             onPress={() => {
-        //                 navigation.pop()
-        //             }}>
-        //         <Image 
-        //             source={BackArrow}
-        //             style={styles.arrow}
-        //         />
-        //         </TouchableOpacity>
-        //         <Text style={styles.text}>Join Game</Text> 
-        //     </View>
-        //     <View style={styles.bottom}>
-        //         <TextInput 
-        //             style={styles.input} 
-        //             onChangeText={name => setPlayerName(name.toUpperCase())} 
-        //             value={playerName}
-        //             placeholder="Name"
-        //             placeholderTextColor={placeholderColor}
-        //             maxLength={8}
-        //         />
-        //         <TextInput 
-        //             style={styles.input} 
-        //             onChangeText={code => setGameCode(code.toUpperCase())} 
-        //             value={gameCode}
-        //             placeholder="Game Code"
-        //             placeholderTextColor={placeholderColor}
-        //             maxLength={4}
-        //         />
-        //         <View style={styles.button}> 
-        //             <Button 
-        //                 title="Continue"
-        //                 color="white"
-        //                 onPress={() => {
-        //                     joinGame(gameCode, playerName);
-        //                 }}
-        //             />
-        //         </View>
-        //         </View>
-        // </View>
     )
 };
 
