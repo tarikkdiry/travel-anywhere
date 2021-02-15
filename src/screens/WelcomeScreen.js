@@ -15,7 +15,10 @@ const WelcomeScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity 
+            <View style={styles.top}>
+
+            
+            {/* <TouchableOpacity 
                 activeOpacity={0.1}
                 underlayColor="#DDDDDD"
                 style={styles.arrow}
@@ -26,37 +29,40 @@ const WelcomeScreen = ({ route, navigation }) => {
                 source={BackArrow}
                 style={styles.arrow}
             />
-            </TouchableOpacity>
-            <Text style={styles.text}>Travel Anywhere</Text> 
-            <View style={styles.buttons}> 
-                <Button 
-                    title="Create Game"
-                    style={styles.button}
-                    color="white"
-                    onPress={() => {
-                        navigation.push('CreateGame', {
+            </TouchableOpacity> */}
+                <Text style={styles.text}>Travel Anywhere</Text> 
+            </View>
+            <View style={styles.bottom}>
+                <View style={styles.buttons}> 
+                    <Button 
+                        title="Create Game"
+                        style={styles.button}
+                        color="white"
+                        onPress={() => {
+                            navigation.push('CreateGame', {
 
-                        })
-                    }}
-                />
-                <Button 
-                    title="Join Game"
-                    color="white"
-                    onPress={() => {
-                        navigation.push('JoinGame', {
+                            })
+                        }}
+                    />
+                    <Button 
+                        title="Join Game"
+                        color="white"
+                        onPress={() => {
+                            navigation.push('JoinGame', {
 
-                        })
-                    }}
-                />
-                <Button 
-                    title="Single Player"
-                    color="white"
-                    onPress={() => {
-                        navigation.push('Select', {
+                            })
+                        }}
+                    />
+                    <Button 
+                        title="Single Player"
+                        color="white"
+                        onPress={() => {
+                            navigation.push('Select', {
 
-                        })
-                    }}
-                />
+                            })
+                        }}
+                    />
+                </View>
             </View>
         </View>
     )
@@ -65,16 +71,28 @@ const WelcomeScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        display: 'flex',
         flexDirection: 'column',
         backgroundColor: '#D95A2B',
         padding: 20
     },
+    top: {
+        flex: 1,
+        
+    },
+    bottom: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        // backgroundColor: 'red'
+    },
     text: {
+        display: 'flex',
         fontSize: 40, 
         color: 'white', 
         fontFamily: 'regular',
-        marginTop: '20%',
-        padding: 20
+        marginTop: '50%',
+        padding: 20,
     },
     arrow: {
         height: 50,
@@ -83,11 +101,9 @@ const styles = StyleSheet.create({
         marginTop: '20%'
     },
     buttons: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        // height: 30,
-        // backgroundColor: 'blue'
+        // flex: 1,
+        // alignItems: 'center',
+        // justifyContent: 'center',
     },
     button: {
         

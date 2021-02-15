@@ -8,28 +8,73 @@ import * as firebase from 'firebase';
 import { login, signup, signout } from '../api/CardsApi';
 
 const LobbyScreen = ({ route, navigation }) => {
-    this.db = firebase.database();
     // Route params
-    const { session, hostName } = route.params;
+    const { session, hostName, playerName } = route.params;
 
     const [currentHost, setCurrentHost] = useState(hostName);
     const [players, setPlayers] = useState([]);
+    const [currentPlayer, setCurrentPlayer] = useState(playerName);
     const [everyoneReady, setEveryoneReady] = useState(false);
 
     useEffect(() => {
         // Update the players as they join/ready up
         // Check for all players joined/readied up
+        setCurrentPlayer(playerName);
+
+        // if (!players.includes(playerName)) {
+        //     setPlayers(currentPlayers => [...currentPlayers, playerName]);
+        // };
+        seeStates();
+
+        // Listen if game gets deleted
+        let game = firebase.database().ref(`games/${session}`);
+        game.on('value', (snapshot) => {
+            if(snapshot.val() === null && !currentHost) {
+                // navigation.navigate('Welcome', {
+
+                // });
+                console.log(snapshot);
+            };
+        });
     })
 
-    onSignedOut = () => {
-        console.log('Signed out!');
-        navigation.push('Login'); ;// REFACTOR 
+    const leaveGame = async () => {
+        console.log(currentPlayer + ' left the game!');
+        if (currentPlayer == currentHost) {
+            deleteGame(session);
+            console.log(`Session ${session} has ended!`);
+            navigation.navigate('Welcome', { 
+
+            });
+        } 
+        else {
+            let waitingPlayer = await firebase.database().ref(`game/${session}/waiting`).once('value');
+            const players = Object.values(waitingPlayer.val());
+            players.forEach((player) => {
+                // console.log(player);
+                if (player === currentPlayer) {
+                    firebase.database().ref(`game/${session}/waiting`).remove();
+                };
+            })
+        }
+    };
+
+    const readyUp = () => {
+        // firebase.database().ref(`game/${session}/waiting/${currentPlayer}`).remove();
     };
 
     // Move to shared folder
     const deleteGame = (gameCode) => {
-        this.db.ref('game/' + gameCode).remove();
-        this.db.ref('players/' + gameCode).remove();
+        firebase.database().ref('game/' + gameCode).remove();
+        firebase.database().ref('players/' + gameCode).remove();
+    };
+
+    const seeStates = () => {
+        console.log("Session: " + session);
+        console.log("Current Host: " + currentHost);
+        console.log("Current player: " + currentPlayer);
+        console.log("Players: " + players);
+        console.log("Everyone ready: " + everyoneReady);
     };
 
     return (
@@ -40,8 +85,7 @@ const LobbyScreen = ({ route, navigation }) => {
                     underlayColor="#DDDDDD"
                     style={styles.arrow}
                     onPress={() => {
-                        deleteGame(session);
-                        navigation.navigate('Welcome');
+                        leaveGame()
                     }}>
                 <Image 
                     source={BackArrow}
@@ -59,7 +103,7 @@ const LobbyScreen = ({ route, navigation }) => {
                         color="white"
                         onPress={() => {
                             // navigation.push('CreateGame', {
-
+                            // leaveGame();
                             // })
                         }}
                     />

@@ -5,7 +5,7 @@ const LoadingScreen = ({ text }) => {
     return(
         <View style={styles.container}>
             <View style={styles.loading}>
-                <Text>{text}</Text>
+                <Text style={styles.text}>{text}</Text>
             </View>
         </View>
     )
@@ -21,9 +21,12 @@ const styles = StyleSheet.create({
         display: 'flex',
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'center',    
+    },
+    text: {
         fontFamily: 'regular',
         fontSize: 40, 
+        color: 'white'
     }
 });
 

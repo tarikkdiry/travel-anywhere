@@ -34,33 +34,26 @@ const JoinGameScreen = ({ route, navigation }) => {
         }
         
         try {
+            setIsLoading(true);
             let sessionOpen = await canJoinGame(session);
             (sessionOpen) ? (
-                console.log(`${name} is joining the game!`)
+                await firebase.database().ref(`game/${session}/waiting`).push(playerName)
                 .then(
-                firebase.database().ref('players/' + session).set({
-                    // timestamp: Date.now(),
-                    // players: 1
-                }).then(
+                    await firebase.database().ref(`players/` + gameCode).push(playerName),
+                    console.log(`${name} is joining the game!`),
                     navigation.navigate('Lobby', {
-                        
+                        session: gameCode,
+                        playerName: playerName 
                     })
-                ))
+                )
             ) : (
-                console.log("Session is not open!")   
-            ).then(() => {
-                firebase.database().ref('players/' + session).set({
-                    playerName: name,
-                    host: name,
-                    status: 'lobby',
-                }).then(
-                    navigation.navigate('Lobby', {
-                        
-                    })
-                );
-            })
+                console.log("Session is not open!"),
+                setIsLoading(false)
+            )
         } catch(err) {
-
+            setError(err);
+            console.log("Unable to join: " + err);
+            setIsLoading(false);
         }
     };
 
@@ -69,23 +62,20 @@ const JoinGameScreen = ({ route, navigation }) => {
         try {
             let snapshot = await firebase.database().ref(`game`).orderByKey().equalTo(session).once('value');
             if(snapshot.val() == null) {
-                setIsLoading(false);
                 setError('This game cannot be joined. :(');
                 return false;
             } 
-            console.log('Game found!');
-            setIsLoading(true);
+            console.log(`Game ${gameCode} found!`);
             return true;
         } catch {
             console.log('Could not check if the game exists. :(');
-            setIsLoading(false);
             return false;
         }
     };
 
     const leaveGame = async (session, name) => {
         return;
-    }
+    };
 
     return (
         <View style={styles.container}>
@@ -135,6 +125,7 @@ const JoinGameScreen = ({ route, navigation }) => {
                                     color="white"
                                     onPress={() => {
                                         joinGame(gameCode, playerName);
+                                        // addNewPlayer("asdasdasd", gameCode);
                                     }}
                                 />
                             </View>
@@ -151,10 +142,11 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#023859',
-        padding: 20
+        // padding: 20
     },
     top: {
         flex: 2,
+        padding: 20
     },
     bottom: {
         flex: 3,

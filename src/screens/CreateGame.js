@@ -19,23 +19,26 @@ const CreateGameScreen = ({ route, navigation }) => {
 
     const createGameHelper = async (session, name) => {
         try {
+            // Create new game session under 'game/'
             await firebase.database().ref('game/' + session).set({
                 playerName: name,
                 host: name,
                 status: 'lobby',
                 timestamp: Date.now(),
-                waiting: [name]
+                waiting: []
             });
+            
             console.log('Game session created!');
-            await firebase.database().ref('players/' + session).set({
-                host: name,
-                players: [name]
-            })
+            // Push {uid, name} to games/{session}/waiting 
+            await firebase.database().ref(`game/${session}/waiting`).push(hostName)
+            // Push {uid, name} to players/session
+            await firebase.database().ref(`players/` + session).push(hostName)
             .then(
                 // Move on to lobby page
                 navigation.navigate('Lobby', {
                     session: session,
-                    hostName: hostName
+                    hostName: hostName,
+                    playerName: name
                 }),
                 console.log(`${name} is on their way to the lobby!`)
             )
@@ -115,16 +118,6 @@ const CreateGameScreen = ({ route, navigation }) => {
                             createGame(generateGameCode(), hostName.toUpperCase());
                         }}
                     />
-                    {/* <Button 
-                        title="Reset"
-                        color="white"
-                        // onPress={() => {
-                        //     navigation.pop()
-                        // }}
-                        onPress={() => {
-                            deleteGame(gameCode);
-                        }}
-                    /> */}
                 </View>
             </View>
         </View>
