@@ -125,7 +125,6 @@ const JoinGameScreen = ({ route, navigation }) => {
                                     color="white"
                                     onPress={() => {
                                         joinGame(gameCode, playerName);
-                                        // addNewPlayer("asdasdasd", gameCode);
                                     }}
                                 />
                             </View>
@@ -151,7 +150,8 @@ const styles = StyleSheet.create({
     bottom: {
         flex: 3,
         flexDirection: 'column',
-        justifyContent: 'flex-start'
+        justifyContent: 'flex-start',
+        padding: 20
     },
     text: {
         fontSize: 40, 

@@ -18,6 +18,7 @@ const CreateGameScreen = ({ route, navigation }) => {
     };
 
     const createGameHelper = async (session, name) => {
+        setIsLoading(true);
         try {
             // Create new game session under 'game/'
             await firebase.database().ref('game/' + session).set({
@@ -43,9 +44,10 @@ const CreateGameScreen = ({ route, navigation }) => {
                 console.log(`${name} is on their way to the lobby!`)
             )
             setGameCode(session);
-        } catch (err) {
             setIsLoading(false);
+        } catch (err) {
             console.log("Sorry! Can't create game... -> " + err.message);
+            setIsLoading(false);
             deleteGame(session);
         }
     }

@@ -9,7 +9,7 @@ import { login, signup, signout } from '../api/CardsApi';
 
 const LobbyScreen = ({ route, navigation }) => {
     // Route params
-    const { session, hostName, playerName } = route.params;
+    const { session, hostName, playerName,currentPlayerKey } = route.params;
 
     const [currentHost, setCurrentHost] = useState(hostName);
     const [players, setPlayers] = useState([]);
@@ -17,45 +17,52 @@ const LobbyScreen = ({ route, navigation }) => {
     const [everyoneReady, setEveryoneReady] = useState(false);
 
     useEffect(() => {
-        // Update the players as they join/ready up
-        // Check for all players joined/readied up
         setCurrentPlayer(playerName);
 
-        // if (!players.includes(playerName)) {
-        //     setPlayers(currentPlayers => [...currentPlayers, playerName]);
-        // };
+        // Grab host player
+        let host = firebase.database().ref(`game/${session}/host`);
+        // setCurrentHost(host);
+       
         seeStates();
+    });
 
-        // Listen if game gets deleted
-        let game = firebase.database().ref(`games/${session}`);
-        game.on('value', (snapshot) => {
-            if(snapshot.val() === null && !currentHost) {
-                // navigation.navigate('Welcome', {
-
-                // });
-                console.log(snapshot);
-            };
-        });
-    })
-
+    // REFACTOR
+    // Idea: Same player ID for both /players and /game
     const leaveGame = async () => {
-        console.log(currentPlayer + ' left the game!');
         if (currentPlayer == currentHost) {
             deleteGame(session);
             console.log(`Session ${session} has ended!`);
-            navigation.navigate('Welcome', { 
-
-            });
-        } 
-        else {
-            let waitingPlayer = await firebase.database().ref(`game/${session}/waiting`).once('value');
-            const players = Object.values(waitingPlayer.val());
-            players.forEach((player) => {
-                // console.log(player);
-                if (player === currentPlayer) {
-                    firebase.database().ref(`game/${session}/waiting`).remove();
+            navigation.navigate('Welcome');
+        } else {
+            // waiting
+            let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
+            let waitingPlayersObj = waitingPlayers.val();
+            const waitingIDs = Object.keys(waitingPlayersObj);
+            waitingIDs.forEach((ID) => {
+                if (waitingPlayersObj[ID] == playerName) {
+                    try {
+                        firebase.database().ref(`game/${session}/waiting/${ID}`).remove();
+                    } catch(err) {
+                        console.log(`Can't leave the game: ${err}`);
+                    }
                 };
-            })
+            });
+
+            // players
+            let activePlayers = await firebase.database().ref(`players/${session}`).once('value');
+            let activePlayersObj = activePlayers.val();
+            const activeIDs = Object.keys(activePlayersObj);
+            activeIDs.forEach((ID) => {
+                if (activePlayersObj[ID] == playerName) {
+                    try {
+                        firebase.database().ref(`players/${session}/${ID}`).remove();
+                        console.log(`Player: ${playerName} has left!`);
+                    } catch(err) {
+                        console.log(`Can't leave the game: ${err}`);
+                    }                    
+                };
+                navigation.navigate('Welcome');
+            });
         }
     };
 
@@ -73,6 +80,7 @@ const LobbyScreen = ({ route, navigation }) => {
         console.log("Session: " + session);
         console.log("Current Host: " + currentHost);
         console.log("Current player: " + currentPlayer);
+        console.log("Current player key: " + currentPlayerKey);
         console.log("Players: " + players);
         console.log("Everyone ready: " + everyoneReady);
     };
@@ -105,6 +113,7 @@ const LobbyScreen = ({ route, navigation }) => {
                             // navigation.push('CreateGame', {
                             // leaveGame();
                             // })
+                            seeStates();
                         }}
                     />
                 </View>
