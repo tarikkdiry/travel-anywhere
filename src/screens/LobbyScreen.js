@@ -9,7 +9,7 @@ import { login, signup, signout } from '../api/CardsApi';
 
 const LobbyScreen = ({ route, navigation }) => {
     // Route params
-    const { session, hostName, playerName,currentPlayerKey } = route.params;
+    const { session, hostName, playerName } = route.params;
 
     const [currentHost, setCurrentHost] = useState(hostName);
     const [players, setPlayers] = useState([]);
@@ -22,6 +22,13 @@ const LobbyScreen = ({ route, navigation }) => {
         // Grab host player
         let host = firebase.database().ref(`game/${session}/host`);
         // setCurrentHost(host);
+
+        // Listen for if waiting is empty, or if players length == ready length
+        // Update everyoneReady to true and navigate to Game
+
+        // Listen if host leaves/game ends
+        // Eng game and navigate to popToTop
+
        
         seeStates();
     });
@@ -66,8 +73,20 @@ const LobbyScreen = ({ route, navigation }) => {
         }
     };
 
-    const readyUp = () => {
-        // firebase.database().ref(`game/${session}/waiting/${currentPlayer}`).remove();
+    const readyUp = async () => {
+        let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
+        let waitingPlayersObj = waitingPlayers.val();
+        const waitingIDs = Object.keys(waitingPlayersObj);
+        waitingIDs.forEach((ID) => {
+            if (waitingPlayersObj[ID] == playerName) {
+                try {
+                    firebase.database().ref(`game/${session}/waiting/${ID}`).remove();
+                } catch(err) {
+                    console.log(`Can't ready up: ${err}`);
+                }
+            };
+        });
+        console.log(`${playerName} is ready!`);
     };
 
     // Move to shared folder
@@ -80,7 +99,7 @@ const LobbyScreen = ({ route, navigation }) => {
         console.log("Session: " + session);
         console.log("Current Host: " + currentHost);
         console.log("Current player: " + currentPlayer);
-        console.log("Current player key: " + currentPlayerKey);
+        // console.log("Current player key: " + currentPlayerKey);
         console.log("Players: " + players);
         console.log("Everyone ready: " + everyoneReady);
     };
@@ -110,10 +129,7 @@ const LobbyScreen = ({ route, navigation }) => {
                         style={styles.button}
                         color="white"
                         onPress={() => {
-                            // navigation.push('CreateGame', {
-                            // leaveGame();
-                            // })
-                            seeStates();
+                            readyUp();
                         }}
                     />
                 </View>

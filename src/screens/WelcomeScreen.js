@@ -46,6 +46,7 @@ const WelcomeScreen = ({ route, navigation }) => {
                     />
                     <Button 
                         title="Join Game"
+                        style={styles.button}
                         color="white"
                         onPress={() => {
                             navigation.push('JoinGame', {
@@ -55,6 +56,7 @@ const WelcomeScreen = ({ route, navigation }) => {
                     />
                     <Button 
                         title="Single Player"
+                        style={styles.button}
                         color="white"
                         onPress={() => {
                             navigation.push('Select', {
