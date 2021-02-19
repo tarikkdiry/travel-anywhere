@@ -15,25 +15,34 @@ const LobbyScreen = ({ route, navigation }) => {
     const [players, setPlayers] = useState([]);
     const [currentPlayer, setCurrentPlayer] = useState(playerName);
     const [everyoneReady, setEveryoneReady] = useState(false);
+    // const [gameOver, setGameOver] = useState(false);
 
     useEffect(() => {
         setCurrentPlayer(playerName);
 
         // Grab host player
-        let host = firebase.database().ref(`game/${session}/host`);
+        let host = firebase.database().ref(`game/${session}`).once('value', (snapshot) => {
+            setCurrentHost(snapshot.val().host);
+        })
+        
+        // Test how useEffect hook works
+        let testCDM = () => {
+            console.log("Here!");
+        }
         // setCurrentHost(host);
 
         // Listen for if waiting is empty, or if players length == ready length
         // Update everyoneReady to true and navigate to Game
 
+
         // Listen if host leaves/game ends
-        // Eng game and navigate to popToTop
+        // End game and navigate to popToTop
 
        
         seeStates();
     });
 
-    // REFACTOR
+    // TODO: REFACTOR
     // Idea: Same player ID for both /players and /game
     const leaveGame = async () => {
         if (currentPlayer == currentHost) {
@@ -62,8 +71,10 @@ const LobbyScreen = ({ route, navigation }) => {
             activeIDs.forEach((ID) => {
                 if (activePlayersObj[ID] == playerName) {
                     try {
-                        firebase.database().ref(`players/${session}/${ID}`).remove();
-                        console.log(`Player: ${playerName} has left!`);
+                        firebase.database().ref(`players/${session}/${ID}`).remove()
+                        .then(
+                            console.log(`Player: ${playerName} has left!`)
+                        )
                     } catch(err) {
                         console.log(`Can't leave the game: ${err}`);
                     }                    
