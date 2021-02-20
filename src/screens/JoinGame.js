@@ -79,58 +79,53 @@ const JoinGameScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            {
-                isLoading ? (
-                    <View>
-                        <Loading text="Loading Game!"/>
-                    </View> 
-                ) : (
-                    <View style={styles.container}>
-                        <View style={styles.top}>
-                            <TouchableOpacity 
-                                activeOpacity={0.1}
-                                underlayColor="#DDDDDD"
-                                style={styles.arrow}
-                                onPress={() => {
-                                    leaveGame(gameCode, playerName);
-                                    navigation.pop()
-                                }}>
-                            <Image 
-                                source={BackArrow}
-                                style={styles.arrow}
-                            />
-                            </TouchableOpacity>
-                            <Text style={styles.text}>Join Game</Text> 
-                        </View>
-                        <View style={styles.bottom}>
-                            <TextInput 
-                                style={styles.input} 
-                                onChangeText={name => setPlayerName(name.toUpperCase())} 
-                                value={playerName}
-                                placeholder="Name"
-                                placeholderTextColor={placeholderColor}
-                                maxLength={8}
-                            />
-                            <TextInput 
-                                style={styles.input} 
-                                onChangeText={code => setGameCode(code.toUpperCase())} 
-                                value={gameCode}
-                                placeholder="Game Code"
-                                placeholderTextColor={placeholderColor}
-                                maxLength={4}
-                            />
-                            <View style={styles.button}> 
-                                <Button 
-                                    title="Continue"
-                                    color="white"
-                                    onPress={() => {
-                                        joinGame(gameCode, playerName);
-                                    }}
-                                />
-                            </View>
-                        </View>
+            <View style={styles.top}>
+                <TouchableOpacity 
+                    activeOpacity={0.1}
+                    underlayColor="#DDDDDD"
+                    style={styles.arrow}
+                    onPress={() => {
+                        leaveGame(gameCode, playerName);
+                        navigation.pop()
+                    }}>
+                <Image 
+                    source={BackArrow}
+                    style={styles.arrow}
+                />
+                </TouchableOpacity>
+                <Text style={styles.text}>Join Game</Text> 
+            </View>
+            <View style={styles.bottom}>
+                <View style={styles.userInput}>
+                    <TextInput 
+                        style={styles.input} 
+                        onChangeText={name => setPlayerName(name.toUpperCase())} 
+                        value={playerName}
+                        placeholder="Name"
+                        placeholderTextColor={placeholderColor}
+                        maxLength={8}
+                    />
+                    <TextInput 
+                        style={styles.input} 
+                        onChangeText={code => setGameCode(code.toUpperCase())} 
+                        value={gameCode}
+                        placeholder="Game Code"
+                        placeholderTextColor={placeholderColor}
+                        maxLength={4}
+                    />
+                </View>
+                <View style={styles.continue}>
+                    <View style={styles.button}> 
+                        <Button 
+                            title="Continue"
+                            color="white"
+                            onPress={() => {
+                                joinGame(gameCode, playerName);
+                            }}
+                        />
                     </View>
-                )}
+                </View>
+            </View>
         </View>
     )
 };
@@ -141,17 +136,15 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#023859',
-        // padding: 20
+        padding: 20
     },
     top: {
         flex: 2,
-        padding: 20
     },
     bottom: {
         flex: 3,
         flexDirection: 'column',
-        justifyContent: 'flex-start',
-        padding: 20
+        justifyContent: 'center',
     },
     text: {
         fontSize: 40, 
@@ -166,6 +159,11 @@ const styles = StyleSheet.create({
         tintColor: 'white',
         marginTop: '20%'
     },
+    userInput: {
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'flex-start'
+    },
     input: {
         height: 60,
         borderColor: 'white',
@@ -174,6 +172,13 @@ const styles = StyleSheet.create({
         marginVertical: 15,
         fontSize: 30,
         fontFamily: 'regular',
+    },
+    continue: {
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        paddingBottom: '10%'
     },
     button: {
         width: '50%',

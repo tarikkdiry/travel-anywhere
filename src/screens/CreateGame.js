@@ -9,6 +9,7 @@ const CreateGameScreen = ({ route, navigation }) => {
     const [gameCode, setGameCode] = useState('') // Four Character code
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
     const placeholderColor = "#808080"; // or #949494
 
     const createGame = (session, name) => {
@@ -18,6 +19,12 @@ const CreateGameScreen = ({ route, navigation }) => {
     };
 
     const createGameHelper = async (session, name) => {
+        if (name.length < 1) {
+            console.log('You must enter a name!');
+            setError('You must enter a name!');
+            return;
+        }
+
         setIsLoading(true);
         try {
             // Create new game session under 'game/'
@@ -51,6 +58,7 @@ const CreateGameScreen = ({ route, navigation }) => {
             deleteGame(session);
         }
     }
+    
     // Check if game session exists and is active
     const doesGameExist = (session) => {
         firebase.database().ref('game/' + session).once('value', snapshot => {
@@ -98,28 +106,29 @@ const CreateGameScreen = ({ route, navigation }) => {
                     style={styles.arrow}
                 />
                 </TouchableOpacity>
-            <Text style={styles.text}>Create Game</Text> 
+                <Text style={styles.text}>Create Game</Text> 
             </View>
             <View style={styles.bottom}>
-                <TextInput 
-                    style={styles.input} 
-                    onChangeText={name => setHostName(name.toUpperCase())} 
-                    value={hostName}
-                    placeholder="Name"
-                    placeholderTextColor={placeholderColor}
-                    maxLength={8}
-                />
-                <View style={styles.button}> 
-                    <Button 
-                        title="Continue"
-                        color="white"
-                        // onPress={() => {
-                        //     navigation.pop()
-                        // }}
-                        onPress={() => {
-                            createGame(generateGameCode(), hostName.toUpperCase());
-                        }}
+                <View style={styles.userInput}>
+                    <TextInput 
+                        style={styles.input} 
+                        onChangeText={name => setHostName(name.toUpperCase())} 
+                        value={hostName}
+                        placeholder="Name"
+                        placeholderTextColor={placeholderColor}
+                        maxLength={8}
                     />
+                </View>
+                <View style={styles.continue}>
+                    <View style={styles.button}> 
+                        <Button 
+                            title="Continue"
+                            color="white"
+                            onPress={() => {
+                                createGame(generateGameCode(), hostName.toUpperCase());
+                            }}
+                        />
+                    </View>
                 </View>
             </View>
         </View>
@@ -128,6 +137,7 @@ const CreateGameScreen = ({ route, navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
+        display: 'flex',
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#023859',
@@ -139,7 +149,7 @@ const styles = StyleSheet.create({
     bottom: {
         flex: 3,
         flexDirection: 'column',
-        justifyContent: 'flex-start'
+        justifyContent: 'center',
     },
     text: {
         fontSize: 40, 
@@ -154,6 +164,11 @@ const styles = StyleSheet.create({
         tintColor: 'white',
         marginTop: '20%'
     },
+    userInput: {
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'flex-start',
+    },
     input: {
         height: 60,
         borderColor: 'white',
@@ -163,11 +178,19 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontFamily: 'regular',
     },
+    continue: {
+        display: 'flex',
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        paddingBottom: '10%'
+    },
     button: {
         width: '50%',
         borderColor: 'white',
         borderWidth: 1,
-        borderRadius: 10
+        borderRadius: 20,
+        
     }
 });
 

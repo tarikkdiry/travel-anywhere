@@ -88,6 +88,7 @@ export default function App() {
           component={JoinGameScreen}
           options={{
             headerShown: false,
+            gestureEnabled: false
           }}
         />
         <Stack.Screen 
