@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TextInput, Modal } from 'react-native';
 import BackArrow from '../../assets/back_arrow.png';
 import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -21,6 +21,7 @@ const CreateGameScreen = ({ route, navigation }) => {
     const createGameHelper = async (session, name) => {
         if (name.length < 1) {
             console.log('You must enter a name!');
+            setIsModalVisible(true);
             setError('You must enter a name!');
             return;
         }
@@ -37,10 +38,11 @@ const CreateGameScreen = ({ route, navigation }) => {
             });
             
             console.log('Game session created!');
-            // Push {uid, name} to games/{session}/waiting 
-            await firebase.database().ref(`game/${session}/waiting`).push(hostName)
+
+            // Push UID and Name for host to /players and /game/session
+            let ref = await firebase.database().ref(`players/${session}`).push(hostName)
+            await firebase.database().ref(`game/${session}/waiting/${ref.key}`).set(hostName)
             // Push {uid, name} to players/session
-            await firebase.database().ref(`players/` + session).push(hostName)
             .then(
                 // Move on to lobby page
                 navigation.navigate('Lobby', {
@@ -83,22 +85,43 @@ const CreateGameScreen = ({ route, navigation }) => {
         return result;
     };
 
-    // Move to shared folder
+    // TODO: Relocate to shared functions
     const deleteGame = (gameCode) => {
         firebase.database().ref('game/' + gameCode).remove();
         firebase.database().ref('players/' + gameCode).remove();
-        console.log(`${gameCode} has been removed!`);
     };
 
     return (
         <View style={styles.container}>
+            {/* <Modal 
+                animationType={"fade"}
+                transparent={false}
+                visible={isModalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setIsModalVisible(!isModalVisible);
+                }}
+                style={styles.modal}
+            >
+                <Text style={styles.modalText}>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                    Maecenas eget tempus augue, a convallis velit.
+                </Text>
+
+                <Button 
+                    title="Got it"
+                    color="black"
+                    onPress={() => {
+                        setIsModalVisible(!isModalVisible);
+                    }}
+                />
+            </Modal> */}
             <View style={styles.top}>
                 <TouchableOpacity 
                     activeOpacity={0.1}
                     underlayColor="#DDDDDD"
                     style={styles.arrow}
                     onPress={() => {
-                        deleteGame(gameCode);
                         navigation.pop();
                     }}>
                 <Image 
@@ -143,6 +166,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#023859',
         padding: 20
     },
+    // modal: {
+    //     height: 500,
+    //     backgroundColor: '#023859'
+    // },
+    // modalText: {
+    //     color:
+    // },
     top: {
         flex: 2,
     },

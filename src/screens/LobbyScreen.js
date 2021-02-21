@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import BackArrow from '../../assets/back_arrow.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import _ from 'lodash';
 import * as firebase from 'firebase';
 
 // API
@@ -20,26 +21,34 @@ const LobbyScreen = ({ route, navigation }) => {
     useEffect(() => {
         setCurrentPlayer(playerName);
 
-        // Grab host player
-        let host = firebase.database().ref(`game/${session}`).once('value', (snapshot) => {
-            setCurrentHost(snapshot.val().host);
-        })
-        
-        // Test how useEffect hook works
-        let testCDM = () => {
-            console.log("Here!");
-        }
-        // setCurrentHost(host);
-
         // Listen for if waiting is empty, or if players length == ready length
         // Update everyoneReady to true and navigate to Game
+        const isAllReady = firebase.database().ref(`game/${session}/waiting`).on('value', (snapshot) => {
+            if (!snapshot) {
+                setEveryoneReady(true);
+                console.log('Everyone is ready!');
+            } else {
+                setEveryoneReady(false); // Might not need this   
+            }
+        })
 
+        const getAllPlayers = firebase.database().ref(`players/${session}`).on('value', (snapshot) => {
+        //     let  dbPlayers = _.toPairs(snapshot.val());
+        //     setPlayers([...dbPlayers]);
+            console.log(_.toPairs(snapshot.val()));
+            // setPlayers()
+        });
 
         // Listen if host leaves/game ends
         // End game and navigate to popToTop
 
        
         seeStates();
+
+        // Handle turning off all listeners here
+        return () => {
+            // isAllReady();
+        }
     });
 
     // TODO: REFACTOR
@@ -107,12 +116,14 @@ const LobbyScreen = ({ route, navigation }) => {
     };
 
     const seeStates = () => {
+        console.log("------------------STATES------------------");
         console.log("Session: " + session);
         console.log("Current Host: " + currentHost);
         console.log("Current player: " + currentPlayer);
         // console.log("Current player key: " + currentPlayerKey);
         console.log("Players: " + players);
         console.log("Everyone ready: " + everyoneReady);
+        console.log("------------------------------------------");
     };
 
     return (
@@ -135,14 +146,22 @@ const LobbyScreen = ({ route, navigation }) => {
             </View>
             <View style={styles.bottom}>
                 <View style={styles.buttons}> 
-                    <Button 
-                        title="READY"
-                        style={styles.button}
-                        color="white"
-                        onPress={() => {
-                            readyUp();
-                        }}
-                    />
+                {
+                    // Host will be able ready up and continue only after all players are ready
+                    (currentHost !== currentPlayer) ? (
+                        <Button 
+                            title="READY"
+                            style={styles.button}
+                            color="white"
+                            disabled={(currentHost == currentPlayer) ? true : false}
+                            onPress={() => {
+                                readyUp();
+                            }}
+                        />
+                    ) : (
+                        <Text style={{color: 'white'}}>Waiting for players...</Text>
+                    )
+                }
                 </View>
             </View>
         </View>
@@ -187,8 +206,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        // height: 30,
-        // backgroundColor: 'blue'
     },
     button: {
         
