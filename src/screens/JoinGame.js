@@ -32,28 +32,28 @@ const JoinGameScreen = ({ route, navigation }) => {
             setError('You must enter a proper, 4 character code!');
             return;
         }
-        
-        try {
-            setIsLoading(true);
-            let sessionOpen = await canJoinGame(session);
-            (sessionOpen) ? (
-                await firebase.database().ref(`game/${session}/waiting`).push(playerName)
+
+        let sessionOpen = await canJoinGame(session);
+        if (sessionOpen) {
+            try {
+                setIsLoading(true);
+                let ref = await firebase.database().ref(`players/${session}`).push(playerName)
+                await firebase.database().ref(`game/${session}/waiting/${ref.key}`).set(playerName)
                 .then(
-                    await firebase.database().ref(`players/` + gameCode).push(playerName),
                     console.log(`${name} is joining the game!`),
                     navigation.navigate('Lobby', {
                         session: gameCode,
                         playerName: playerName 
                     })
                 )
-            ) : (
-                console.log("Session is not open!"),
-                setIsLoading(false)
-            )
-        } catch(err) {
-            setError(err);
-            console.log("Unable to join: " + err);
-            setIsLoading(false);
+            } catch(err) {
+                setError(err);
+                console.log("Unable to join: " + err);
+                setIsLoading(false);
+            }
+        } else {
+            console.log("Session is not open!"),
+            setIsLoading(false)
         }
     };
 

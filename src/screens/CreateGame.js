@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button, Image, TextInput, Modal } from 'react-native';
 import BackArrow from '../../assets/back_arrow.png';
+import LoadingScreen from '../components/organisms/LoadingScreen';
 import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
@@ -53,7 +54,7 @@ const CreateGameScreen = ({ route, navigation }) => {
                 console.log(`${name} is on their way to the lobby!`)
             )
             setGameCode(session);
-            setIsLoading(false);
+            // setIsLoading(false);
         } catch (err) {
             console.log("Sorry! Can't create game... -> " + err.message);
             setIsLoading(false);
@@ -92,69 +93,78 @@ const CreateGameScreen = ({ route, navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-            {/* <Modal 
-                animationType={"fade"}
-                transparent={false}
-                visible={isModalVisible}
-                onRequestClose={() => {
-                    Alert.alert("Modal has been closed.");
-                    setIsModalVisible(!isModalVisible);
-                }}
-                style={styles.modal}
-            >
-                <Text style={styles.modalText}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                    Maecenas eget tempus augue, a convallis velit.
-                </Text>
-
-                <Button 
-                    title="Got it"
-                    color="black"
-                    onPress={() => {
+        <>
+        {!isLoading ? (
+            <View style={styles.container}>
+                {/* <Modal 
+                    animationType={"fade"}
+                    transparent={false}
+                    visible={isModalVisible}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed.");
                         setIsModalVisible(!isModalVisible);
                     }}
-                />
-            </Modal> */}
-            <View style={styles.top}>
-                <TouchableOpacity 
-                    activeOpacity={0.1}
-                    underlayColor="#DDDDDD"
-                    style={styles.arrow}
-                    onPress={() => {
-                        navigation.pop();
-                    }}>
-                <Image 
-                    source={BackArrow}
-                    style={styles.arrow}
-                />
-                </TouchableOpacity>
-                <Text style={styles.text}>Create Game</Text> 
-            </View>
-            <View style={styles.bottom}>
-                <View style={styles.userInput}>
-                    <TextInput 
-                        style={styles.input} 
-                        onChangeText={name => setHostName(name.toUpperCase())} 
-                        value={hostName}
-                        placeholder="Name"
-                        placeholderTextColor={placeholderColor}
-                        maxLength={8}
+                    style={styles.modal}
+                >
+                    <Text style={styles.modalText}>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                        Maecenas eget tempus augue, a convallis velit.
+                    </Text>
+
+                    <Button 
+                        title="Got it"
+                        color="black"
+                        onPress={() => {
+                            setIsModalVisible(!isModalVisible);
+                        }}
                     />
+                </Modal> */}
+                <View style={styles.top}>
+                    <TouchableOpacity 
+                        activeOpacity={0.1}
+                        underlayColor="#DDDDDD"
+                        style={styles.arrow}
+                        onPress={() => {
+                            navigation.pop();
+                        }}>
+                    <Image 
+                        source={BackArrow}
+                        style={styles.arrow}
+                    />
+                    </TouchableOpacity>
+                    <Text style={styles.text}>Create Game</Text> 
                 </View>
-                <View style={styles.continue}>
-                    <View style={styles.button}> 
-                        <Button 
-                            title="Continue"
-                            color="white"
-                            onPress={() => {
-                                createGame(generateGameCode(), hostName.toUpperCase());
-                            }}
+                <View style={styles.bottom}>
+                    <View style={styles.userInput}>
+                        <TextInput 
+                            style={styles.input} 
+                            onChangeText={name => setHostName(name.toUpperCase())} 
+                            value={hostName}
+                            placeholder="Name"
+                            placeholderTextColor={placeholderColor}
+                            maxLength={8}
                         />
+                    </View>
+                    <View style={styles.continue}>
+                        <View style={styles.button}> 
+                            <Button 
+                                title="Continue"
+                                color="white"
+                                onPress={() => {
+                                    createGame(generateGameCode(), hostName.toUpperCase());
+                                }}
+                            />
+                        </View>
                     </View>
                 </View>
             </View>
-        </View>
+            ) : (
+                <LoadingScreen 
+                    text="On our way!"
+                />
+            )
+        }
+        </>
     )
 };
 

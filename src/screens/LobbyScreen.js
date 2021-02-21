@@ -36,7 +36,6 @@ const LobbyScreen = ({ route, navigation }) => {
         //     let  dbPlayers = _.toPairs(snapshot.val());
         //     setPlayers([...dbPlayers]);
             console.log(_.toPairs(snapshot.val()));
-            // setPlayers()
         });
 
         // Listen if host leaves/game ends

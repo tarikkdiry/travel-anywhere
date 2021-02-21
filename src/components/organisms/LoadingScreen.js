@@ -15,7 +15,9 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        backgroundColor: '#023859'
+        backgroundColor: '#023859',
+        // backgroundColor: 'red',
+        height: '100%'
     },
     loading: {
         display: 'flex',
