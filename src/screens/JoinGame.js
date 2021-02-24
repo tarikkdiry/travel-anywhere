@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
 import BackArrow from '../../assets/back_arrow.png';
 import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import Loading from '../components/organisms/LoadingScreen';
+import LoadingScreen from '../components/organisms/LoadingScreen';
 
 const JoinGameScreen = ({ route, navigation }) => {
     const [playerName, setPlayerName] = useState('');
@@ -78,55 +78,64 @@ const JoinGameScreen = ({ route, navigation }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.top}>
-                <TouchableOpacity 
-                    activeOpacity={0.1}
-                    underlayColor="#DDDDDD"
-                    style={styles.arrow}
-                    onPress={() => {
-                        leaveGame(gameCode, playerName);
-                        navigation.pop()
-                    }}>
-                <Image 
-                    source={BackArrow}
-                    style={styles.arrow}
-                />
-                </TouchableOpacity>
-                <Text style={styles.text}>Join Game</Text> 
-            </View>
-            <View style={styles.bottom}>
-                <View style={styles.userInput}>
-                    <TextInput 
-                        style={styles.input} 
-                        onChangeText={name => setPlayerName(name.toUpperCase())} 
-                        value={playerName}
-                        placeholder="Name"
-                        placeholderTextColor={placeholderColor}
-                        maxLength={8}
+        <>
+        {!isLoading ? (
+            <View style={styles.container}>
+                <View style={styles.top}>
+                    <TouchableOpacity 
+                        activeOpacity={0.1}
+                        underlayColor="#DDDDDD"
+                        style={styles.arrow}
+                        onPress={() => {
+                            leaveGame(gameCode, playerName);
+                            navigation.pop()
+                        }}>
+                    <Image 
+                        source={BackArrow}
+                        style={styles.arrow}
                     />
-                    <TextInput 
-                        style={styles.input} 
-                        onChangeText={code => setGameCode(code.toUpperCase())} 
-                        value={gameCode}
-                        placeholder="Game Code"
-                        placeholderTextColor={placeholderColor}
-                        maxLength={4}
-                    />
+                    </TouchableOpacity>
+                    <Text style={styles.text}>Join Game</Text> 
                 </View>
-                <View style={styles.continue}>
-                    <View style={styles.button}> 
-                        <Button 
-                            title="Continue"
-                            color="white"
-                            onPress={() => {
-                                joinGame(gameCode, playerName);
-                            }}
+                <View style={styles.bottom}>
+                    <View style={styles.userInput}>
+                        <TextInput 
+                            style={styles.input} 
+                            onChangeText={name => setPlayerName(name.toUpperCase())} 
+                            value={playerName}
+                            placeholder="Name"
+                            placeholderTextColor={placeholderColor}
+                            maxLength={8}
                         />
+                        <TextInput 
+                            style={styles.input} 
+                            onChangeText={code => setGameCode(code.toUpperCase())} 
+                            value={gameCode}
+                            placeholder="Game Code"
+                            placeholderTextColor={placeholderColor}
+                            maxLength={4}
+                        />
+                    </View>
+                    <View style={styles.continue}>
+                        <View style={styles.button}> 
+                            <Button 
+                                title="Continue"
+                                color="white"
+                                onPress={() => {
+                                    joinGame(gameCode, playerName);
+                                }}
+                            />
+                        </View>
                     </View>
                 </View>
             </View>
-        </View>
+            ) : (
+                <LoadingScreen 
+                    text="Joining..."
+                />
+            )
+        }
+        </>
     )
 };
 

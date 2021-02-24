@@ -160,7 +160,7 @@ const CreateGameScreen = ({ route, navigation }) => {
             </View>
             ) : (
                 <LoadingScreen 
-                    text="On our way!"
+                    text="Loading..."
                 />
             )
         }

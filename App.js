@@ -103,6 +103,7 @@ export default function App() {
           component={LobbyScreen}
           options={{
             headerShown: false,
+            gestureEnabled: false
           }}
         />
       </Stack.Navigator>

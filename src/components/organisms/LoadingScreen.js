@@ -16,7 +16,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flex: 1,
         backgroundColor: '#023859',
-        // backgroundColor: 'red',
         height: '100%'
     },
     loading: {
