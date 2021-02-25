@@ -19,12 +19,13 @@ const LobbyScreen = ({ route, navigation }) => {
     const [currentPlayer, setCurrentPlayer] = useState(playerName);
     const [everyoneReady, setEveryoneReady] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    // const [gameOver, setGameOver] = useState(false);
+    const [gameOver, setGameOver] = useState(false);
 
     useEffect(() => {
         setCurrentPlayer(playerName);
         const playerRef = firebase.database().ref(`players/${session}`);
         const waitingRef = firebase.database().ref(`game/${session}/waiting`);
+        const gameRef = firebase.database().ref(`game/${session}`);
 
         // Listen for if waiting is empty, or if players length == ready length
         // Update everyoneReady to true and navigate to Game
@@ -35,7 +36,7 @@ const LobbyScreen = ({ route, navigation }) => {
             } else {
                 setEveryoneReady(false); // Might not need this   
             }
-        })
+        });
 
         const listenForPlayers = playerRef.on('value', (snapshot) => {
             const fetchedPlayers = [];
@@ -48,6 +49,13 @@ const LobbyScreen = ({ route, navigation }) => {
             if (JSON.stringify(fetchedPlayers) != JSON.stringify(players)) {
                 setPlayers(fetchedPlayers);
             }            
+        });
+
+        const listenForGame = gameRef.on('value', (snapshot) => {
+            if (!snapshot.exists()) {
+                setGameOver(true);
+                navigation.navigate('Welcome');
+            }
         });
 
         // const getAllPlayers = firebase.database().ref(`players/${session}`).on('value', (snapshot) => {
