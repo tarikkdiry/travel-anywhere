@@ -29,7 +29,7 @@ const LobbyScreen = ({ route, navigation }) => {
 
         // Listen for if waiting is empty, or if players length == ready length
         // Update everyoneReady to true and navigate to Game
-        const isAllReady = firebase.database().ref(`game/${session}/waiting`).on('value', (snapshot) => {
+        const isAllReady = waitingRef.on('value', (snapshot) => {
             if (!snapshot) {
                 setEveryoneReady(true);
                 console.log('Everyone is ready!');
@@ -54,28 +54,18 @@ const LobbyScreen = ({ route, navigation }) => {
         const listenForGame = gameRef.on('value', (snapshot) => {
             if (!snapshot.exists()) {
                 setGameOver(true);
-                navigation.navigate('Welcome');
+                navigation.navigate('Welcome'); // Refactor to show modal indicating the game session has been ended
             }
         });
-
-        // const getAllPlayers = firebase.database().ref(`players/${session}`).on('value', (snapshot) => {
-        //     let dbPlayers = _.toPairs(snapshot.val());
-        // //     setPlayers([...dbPlayers]);
-        //     let len = dbPlayers.length - 1;
-        //     // console.log("Players: " + dbPlayers[len][1]);
-        //     // setPlayers([...players, ...dbPlayers]);
-        // });
-
-
-        // Listen if host leaves/game ends
-        // End game and popToTop
 
         // seeStates();
 
         // Handle turning off all listeners here
         return () => {
             // isAllReady();
+            waitingRef.off('value', isAllReady);
             playerRef.off('value', listenForPlayers);
+            gameRef.off('value', listenForGame)
         }
     });
 

@@ -32,11 +32,10 @@ const JoinGameScreen = ({ route, navigation }) => {
             setError('You must enter a proper, 4 character code!');
             return;
         }
-
+        setIsLoading(true);
         let sessionOpen = await canJoinGame(session);
         if (sessionOpen) {
             try {
-                setIsLoading(true);
                 let ref = await firebase.database().ref(`players/${session}`).push(playerName)
                 await firebase.database().ref(`game/${session}/waiting/${ref.key}`).set(playerName)
                 .then(

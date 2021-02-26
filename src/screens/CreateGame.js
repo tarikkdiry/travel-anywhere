@@ -42,7 +42,7 @@ const CreateGameScreen = ({ route, navigation }) => {
 
             // Push UID and Name for host to /players and /game/session
             let ref = await firebase.database().ref(`players/${session}`).push(hostName)
-            await firebase.database().ref(`game/${session}/waiting/${ref.key}`).set(hostName)
+            // await firebase.database().ref(`game/${session}/waiting/${ref.key}`).set(hostName)
             // Push {uid, name} to players/session
             .then(
                 // Move on to lobby page
