@@ -13,7 +13,7 @@ const PlayerList = ({ players }) => {
             {
                 players.map((player, index) => {
                     return(
-                        <View key={index}>
+                        <View key={index} style={styles.item}>
                             {/* <Text style={{color: 'white', fontSize: 30}}>{player["value"]}</Text> */}
                             <PlayerListItem 
                                 name={player["value"]}
@@ -31,9 +31,12 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flex: 1,
-        flexDirection: 'column',
-        // backgroundColor: 'red',
-        justifyContent: 'space-around',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between'
+    },
+    item: {
+        paddingTop: 40
     }
 });
 

@@ -93,7 +93,7 @@ const LobbyScreen = ({ route, navigation }) => {
                     } catch(err) {
                         console.log(`Can't leave the game: ${err}`);
                     }
-                };
+                } 
             });
 
             // players
@@ -116,12 +116,14 @@ const LobbyScreen = ({ route, navigation }) => {
         }
     };
 
+    // Remove player from 'waiting' and add them to 'ready'
     const readyUp = async () => {
         let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
         let waitingPlayersObj = waitingPlayers.val();
-        const waitingIDs = Object.keys(waitingPlayersObj);
+        const waitingIDs = Object.keys(waitingPlayersObj) || {};
         waitingIDs.forEach((ID) => {
             if (waitingPlayersObj[ID] == playerName) {
+                firebase.database().ref(`game/${session}/ready/${ID}`).set(playerName);
                 try {
                     firebase.database().ref(`game/${session}/waiting/${ID}`).remove();
                 } catch(err) {
@@ -144,7 +146,6 @@ const LobbyScreen = ({ route, navigation }) => {
         console.log("Session: " + session);
         console.log("Current Host: " + currentHost);
         console.log("Current player: " + currentPlayer);
-        // console.log("Current player key: " + currentPlayerKey);
         console.log("Players: " + players);
         console.log("Everyone ready: " + everyoneReady);
         console.log("------------------------------------------");
@@ -162,36 +163,33 @@ const LobbyScreen = ({ route, navigation }) => {
                         onPress={() => {
                             leaveGame()
                         }}>
-                    <Image 
-                        source={BackArrow}
-                        style={styles.arrow}
-                    />
+                        <Image source={BackArrow} style={styles.arrow} />
                     </TouchableOpacity>
                     <Text style={styles.text}>{"Session:"}</Text> 
                     <Text style={styles.session}>{session}</Text> 
-                </View>
-                <View style={styles.bottom}>
-                    <PlayerList 
-                        players={players}
-                    />
-                    <View style={styles.buttons}> 
-                    {
-                        // Host will be able ready up and continue only after all players are ready
-                        (currentHost !== currentPlayer) ? (
-                            <Button 
-                                title="READY"
-                                style={styles.button}
-                                color="white"
-                                disabled={(currentHost == currentPlayer) ? true : false}
-                                onPress={() => {
-                                    readyUp();
-                                }}
-                            />
-                        ) : (
-                            <Text style={{color: 'white'}}>Waiting for players...</Text>
-                        )
-                    }
+                    <View style={styles.playerList}>
+                        <PlayerList 
+                            players={players}
+                        />
                     </View>
+                </View>
+                <View style={styles.bottom}> 
+                    {
+                        (currentHost !== currentPlayer) ? (
+                            <View style={styles.button}> 
+                                <Button 
+                                    title="READY"
+                                    color="white"
+                                    disabled={(currentHost == currentPlayer) ? true : false}
+                                    onPress={() => {
+                                        readyUp();
+                                    }}
+                                />
+                            </View>
+                            ) : (
+                                <Text style={{ color: 'white' }}>Waiting for players...</Text>
+                            )
+                    }
                 </View>
             </View>
         ) : (
@@ -212,12 +210,13 @@ const styles = StyleSheet.create({
         padding: 20
     },
     top: {
-        flex: 2,
+        flex: 3,
     },
     bottom: {
-        flex: 3,
+        flex: 1,
         flexDirection: 'column',
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     text: {
         fontSize: 40, 
@@ -238,14 +237,18 @@ const styles = StyleSheet.create({
         tintColor: 'white',
         marginTop: '20%'
     },
-    buttons: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+    playerList: {
+        flex: 2,
     },
     button: {
-        
-    }
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '50%',
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 20,
+        height: 50,
+    },
 });
 
 export default LobbyScreen;
