@@ -58,11 +58,8 @@ const LobbyScreen = ({ route, navigation }) => {
             }
         });
 
-        // seeStates();
-
         // Handle turning off all listeners here
         return () => {
-            // isAllReady();
             waitingRef.off('value', isAllReady);
             playerRef.off('value', listenForPlayers);
             gameRef.off('value', listenForGame)
@@ -82,45 +79,18 @@ const LobbyScreen = ({ route, navigation }) => {
             }
             setIsLoading(false);
         } else {
-            // waiting
-            let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
-            let waitingPlayersObj = waitingPlayers.val();
-            const waitingIDs = Object.keys(waitingPlayersObj);
-            waitingIDs.forEach((ID) => {
-                if (waitingPlayersObj[ID] == playerName) {
-                    try {
-                        firebase.database().ref(`game/${session}/waiting/${ID}`).remove();
-                    } catch(err) {
-                        console.log(`Can't leave the game: ${err}`);
-                    }
-                } 
-            });
-
-            // players
-            let activePlayers = await firebase.database().ref(`players/${session}`).once('value');
-            let activePlayersObj = activePlayers.val();
-            const activeIDs = Object.keys(activePlayersObj);
-            activeIDs.forEach((ID) => {
-                if (activePlayersObj[ID] == playerName) {
-                    try {
-                        firebase.database().ref(`players/${session}/${ID}`).remove()
-                        .then(
-                            console.log(`Player: ${playerName} has left!`)
-                        )
-                    } catch(err) {
-                        console.log(`Can't leave the game: ${err}`);
-                    }                    
-                };
-                navigation.navigate('Welcome');
-            });
+            removeFromWaiting();
+            removeFromReady();
+            removeFromPlayers();
         }
     };
 
+    // TODO: Consider passing down uid and name as props and pushing to 'ready' here
     // Remove player from 'waiting' and add them to 'ready'
     const readyUp = async () => {
         let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
         let waitingPlayersObj = waitingPlayers.val();
-        const waitingIDs = Object.keys(waitingPlayersObj) || {};
+        const waitingIDs = Object.keys(waitingPlayersObj) || [];
         waitingIDs.forEach((ID) => {
             if (waitingPlayersObj[ID] == playerName) {
                 firebase.database().ref(`game/${session}/ready/${ID}`).set(playerName);
@@ -132,6 +102,57 @@ const LobbyScreen = ({ route, navigation }) => {
             };
         });
         console.log(`${playerName} is ready!`);
+    };
+
+    // ================================================HELPERS================================================
+
+    const removeFromWaiting = async () => {
+        let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
+        let waitingPlayersObj = waitingPlayers.val();
+        const waitingIDs = Object.keys(waitingPlayersObj) || [];
+        waitingIDs.forEach((ID) => {
+            if (waitingPlayersObj[ID] == playerName) {
+                try {
+                    firebase.database().ref(`game/${session}/waiting/${ID}`).remove();
+                } catch(err) {
+                    console.log(`Can't leave the game: ${err}`);
+                }
+            } 
+        });
+    };
+
+    const removeFromReady = async () => {
+        let readyPlayers = await firebase.database().ref(`game/${session}/ready`).once('value');
+        let readyPlayersObj = readyPlayers.val();
+        const readyIDs = Object.keys(readyPlayersObj) || [];
+        readyIDs.forEach((ID) => {
+            if (readyPlayersObj[ID] == playerName) {
+                try {
+                    firebase.database().ref(`game/${session}/ready/${ID}`).remove();
+                } catch(err) {
+                    console.log(`Can't leave the game: ${err}`);
+                }
+            } 
+        });
+    }
+
+    const removeFromPlayers = async () => {
+        let activePlayers = await firebase.database().ref(`players/${session}`).once('value');
+        let activePlayersObj = activePlayers.val();
+        const activeIDs = Object.keys(activePlayersObj) || [];
+        activeIDs.forEach((ID) => {
+            if (activePlayersObj[ID] == playerName) {
+                try {
+                    firebase.database().ref(`players/${session}/${ID}`).remove()
+                    .then(
+                        console.log(`Player: ${playerName} has left!`)
+                    )
+                } catch(err) {
+                    console.log(`Can't leave the game: ${err}`);
+                }                    
+            };
+            navigation.navigate('Welcome');
+        });
     };
 
     // Move to shared folder
@@ -200,6 +221,8 @@ const LobbyScreen = ({ route, navigation }) => {
         }
         </>
     )
+
+    
 }
 
 const styles = StyleSheet.create({
