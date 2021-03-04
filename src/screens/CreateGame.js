@@ -31,7 +31,6 @@ const CreateGameScreen = ({ route, navigation }) => {
         try {
             // Create new game session under 'game/'
             await firebase.database().ref('game/' + session).set({
-                playerName: name,
                 host: name,
                 status: 'lobby',
                 timestamp: Date.now(),

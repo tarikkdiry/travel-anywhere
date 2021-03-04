@@ -14,7 +14,6 @@ const PlayerList = ({ players }) => {
                 players.map((player, index) => {
                     return(
                         <View key={index} style={styles.item}>
-                            {/* <Text style={{color: 'white', fontSize: 30}}>{player["value"]}</Text> */}
                             <PlayerListItem 
                                 name={player["value"]}
                                 status="Waiting"

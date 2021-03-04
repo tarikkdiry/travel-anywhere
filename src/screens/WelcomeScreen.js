@@ -30,7 +30,7 @@ const WelcomeScreen = ({ route, navigation }) => {
                 style={styles.arrow}
             />
             </TouchableOpacity> */}
-                <Text style={styles.text}>Travel Anywhere</Text> 
+                <Text style={styles.text}>Working Title</Text> 
             </View>
             <View style={styles.bottom}>
                 <View style={styles.buttons}> 

@@ -7,38 +7,32 @@ import * as firebase from 'firebase';
 import LoadingScreen from '../components/organisms/LoadingScreen';
 import PlayerList from '../components/molecules/PlayerList';
 
-// API
-import { login, signup, signout } from '../api/CardsApi';
-
 const LobbyScreen = ({ route, navigation }) => {
     // Route params
     const { session, hostName, playerName } = route.params;
 
     const [currentHost, setCurrentHost] = useState(hostName);
-    const [players, setPlayers] = useState([['', '']]);
     const [currentPlayer, setCurrentPlayer] = useState(playerName);
+    const [players, setPlayers] = useState([['', '']]);
     const [everyoneReady, setEveryoneReady] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [gameOver, setGameOver] = useState(false);
+    const [readyCount, setReadyCount] = useState(0); // Excluding Host
 
     useEffect(() => {
         setCurrentPlayer(playerName);
         const playerRef = firebase.database().ref(`players/${session}`);
         const waitingRef = firebase.database().ref(`game/${session}/waiting`);
+        const readyRef = firebase.database().ref(`game/${session}/ready`);
         const gameRef = firebase.database().ref(`game/${session}`);
 
-        // Listen for if waiting is empty, or if players length == ready length
-        // Update everyoneReady to true and navigate to Game
-        const isAllReady = waitingRef.on('value', (snapshot) => {
-            if (!snapshot) {
-                setEveryoneReady(true);
-                console.log('Everyone is ready!');
-            } else {
-                setEveryoneReady(false); // Might not need this   
-            }
+        // Update count of ready players
+        const readyPlayers = readyRef.on('value', (snapshot) => {
+            setReadyCount(snapshot.numChildren());
         });
 
-        const listenForPlayers = playerRef.on('value', (snapshot) => {
+        // Grab number of players to determine if game can be started or not
+        const listenForPlayers = playerRef.on('value', (snapshot) => { 
             const fetchedPlayers = [];
             snapshot.forEach((childSnapshot) => {
                 fetchedPlayers.push({
@@ -46,11 +40,22 @@ const LobbyScreen = ({ route, navigation }) => {
                     value: childSnapshot.val()
                 });
             });
+
+            // Updates the players state whenever a new player joins
             if (JSON.stringify(fetchedPlayers) != JSON.stringify(players)) {
                 setPlayers(fetchedPlayers);
-            }            
+            }     
+            
+            // Check if everyone is ready to proceed, host can then start the session
+            // length - 1 to account for the host we don't want to include
+            if (players.length - 1 == readyCount && readyCount > 0) {
+                setEveryoneReady(true);
+            } else {
+                setEveryoneReady(false);
+            } 
         });
 
+        // If the host leaves, the game is ended for everyone
         const listenForGame = gameRef.on('value', (snapshot) => {
             if (!snapshot.exists()) {
                 setGameOver(true);
@@ -58,26 +63,23 @@ const LobbyScreen = ({ route, navigation }) => {
             }
         });
 
-        // Handle turning off all listeners here
         return () => {
-            waitingRef.off('value', isAllReady);
+            readyRef.off('value', readyPlayers);
             playerRef.off('value', listenForPlayers);
             gameRef.off('value', listenForGame)
         }
     });
 
-    // TODO: REFACTOR
-    // Idea: Same player ID for both /players and /game
     const leaveGame = async () => {
         if (currentPlayer == currentHost) {
             setIsLoading(true);
             try {
                 await deleteGame(session)
-                navigation.navigate('Welcome')   
             } catch (err) {
                 console.log("Can't delete game: " + err);
             }
             setIsLoading(false);
+            navigation.navigate('Welcome')   
         } else {
             removeFromWaiting();
             removeFromReady();
@@ -85,7 +87,6 @@ const LobbyScreen = ({ route, navigation }) => {
         }
     };
 
-    // TODO: Consider passing down uid and name as props and pushing to 'ready' here
     // Remove player from 'waiting' and add them to 'ready'
     const readyUp = async () => {
         let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
@@ -155,13 +156,15 @@ const LobbyScreen = ({ route, navigation }) => {
         });
     };
 
-    // Move to shared folder
+    // Delete game from all root children
     const deleteGame = (gameCode) => {
         firebase.database().ref('game/' + gameCode).remove();
         firebase.database().ref('players/' + gameCode).remove();
         console.log(`Session ${session} has ended!`);
     };
 
+
+    // Print out states for debug purposes
     const seeStates = () => {
         console.log("------------------STATES------------------");
         console.log("Session: " + session);
@@ -201,14 +204,21 @@ const LobbyScreen = ({ route, navigation }) => {
                                 <Button 
                                     title="READY"
                                     color="white"
-                                    disabled={(currentHost == currentPlayer) ? true : false}
+                                    // disabled={(isEveryoneReady) ? true : false}
                                     onPress={() => {
                                         readyUp();
                                     }}
                                 />
                             </View>
                             ) : (
-                                <Text style={{ color: 'white' }}>Waiting for players...</Text>
+                                <Button 
+                                    title={(everyoneReady) ? 'START' : 'Waiting for players to ready up...'}
+                                    color="white"
+                                    disabled={(everyoneReady) ? false : true}
+                                    // onPress={() => {
+                                    //     readyUp();
+                                    // }}
+                                />
                             )
                     }
                 </View>

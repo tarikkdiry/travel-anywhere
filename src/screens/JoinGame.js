@@ -104,7 +104,7 @@ const JoinGameScreen = ({ route, navigation }) => {
                             value={playerName}
                             placeholder="Name"
                             placeholderTextColor={placeholderColor}
-                            maxLength={8}
+                            maxLength={7}
                         />
                         <TextInput 
                             style={styles.input} 
