@@ -230,7 +230,6 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         borderWidth: 1,
         borderRadius: 20,
-        
     }
 });
 

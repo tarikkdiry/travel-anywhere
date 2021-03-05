@@ -14,6 +14,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 // SCREENS
 import LoginScreen from './src/screens/LoginScreen';
 import WelcomeScreen from './src/screens/WelcomeScreen';
+import ActiveGamesScreen from './src/screens/ActiveGames';
 import SelectScreen from './src/screens/SelectScreen';
 import CreateGameScreen from './src/screens/CreateGame';
 import JoinGameScreen from './src/screens/JoinGame';
@@ -57,7 +58,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName="Welcome"
+        initialRouteName="Login"
       >
         <Stack.Screen 
           name="Login"
@@ -86,6 +87,14 @@ export default function App() {
         <Stack.Screen 
           name="JoinGame"
           component={JoinGameScreen}
+          options={{
+            headerShown: false,
+            gestureEnabled: false
+          }}
+        />
+        <Stack.Screen 
+          name="ActiveGames"
+          component={ActiveGamesScreen}
           options={{
             headerShown: false,
             gestureEnabled: false

@@ -16,25 +16,23 @@ const WelcomeScreen = ({ route, navigation }) => {
     return (
         <View style={styles.container}>
             <View style={styles.top}>
-
-            
-            {/* <TouchableOpacity 
-                activeOpacity={0.1}
-                underlayColor="#DDDDDD"
-                style={styles.arrow}
-                onPress={() => {
-                    signout(onSignedOut)
-                }}>
-            <Image 
-                source={BackArrow}
-                style={styles.arrow}
-            />
-            </TouchableOpacity> */}
+                <TouchableOpacity 
+                    activeOpacity={0.1}
+                    underlayColor="#DDDDDD"
+                    style={styles.arrow}
+                    onPress={() => {
+                        signout(onSignedOut)
+                    }}>
+                <Image 
+                    source={BackArrow}
+                    style={styles.arrow}
+                />
+            </TouchableOpacity>
                 <Text style={styles.text}>Working Title</Text> 
             </View>
             <View style={styles.bottom}>
                 <View style={styles.buttons}> 
-                    <Button 
+                    {/* <Button 
                         title="Create Game"
                         style={styles.button}
                         color="white"
@@ -55,7 +53,17 @@ const WelcomeScreen = ({ route, navigation }) => {
                         }}
                     />
                     <Button 
-                        title="Single Player"
+                        title="Active Games"
+                        style={styles.button}
+                        color="white"
+                        onPress={() => {
+                            navigation.push('ActiveGames', {
+
+                            })
+                        }}
+                    /> */}
+                    <Button 
+                        title="Begin!"
                         style={styles.button}
                         color="white"
                         onPress={() => {
@@ -79,11 +87,10 @@ const styles = StyleSheet.create({
         padding: 20
     },
     top: {
-        flex: 1,
-        
+        flex: 2,
     },
     bottom: {
-        flex: 1,
+        flex: 3,
         alignItems: 'center',
         justifyContent: 'center',
         // backgroundColor: 'red'
@@ -93,7 +100,7 @@ const styles = StyleSheet.create({
         fontSize: 40, 
         color: 'white', 
         fontFamily: 'regular',
-        marginTop: '50%',
+        marginTop: '20%',
         padding: 20,
     },
     arrow: {

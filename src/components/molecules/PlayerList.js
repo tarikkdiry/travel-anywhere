@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     item: {
-        paddingTop: 40
+        paddingTop: 40,
     }
 });
 
