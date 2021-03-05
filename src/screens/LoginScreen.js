@@ -22,7 +22,7 @@ class LoginScreen extends Component {
         if (user !== null) {
             this.props.navigation.push('Welcome'); //Might be navigation.navigate
         }
-        console.log(user);
+        // console.log(user);
     }
 
     switchAuthMode = () => {
