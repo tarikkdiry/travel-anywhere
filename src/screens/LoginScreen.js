@@ -20,9 +20,17 @@ class LoginScreen extends Component {
 
     onAuthStateChanged = (user) => {
         if (user !== null) {
+            console.log(user);
             this.props.navigation.push('Welcome'); //Might be navigation.navigate
         }
-        // console.log(user);
+
+
+        // let test = Object.values(user).map((item, index) => {
+        //     console.log('===============ITEM===============')
+        //     console.log(item);
+        // })
+        // console.log('USER: ')
+        // console.log(Object.keys(user));
     }
 
     switchAuthMode = () => {

@@ -91,7 +91,7 @@ const LobbyScreen = ({ route, navigation }) => {
     const readyUp = async () => {
         let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
         let waitingPlayersObj = waitingPlayers.val();
-        const waitingIDs = Object.keys(waitingPlayersObj) || [];
+        const waitingIDs = Object.keys(waitingPlayersObj) || null;
         waitingIDs.forEach((ID) => {
             if (waitingPlayersObj[ID] == playerName) {
                 firebase.database().ref(`game/${session}/ready/${ID}`).set(playerName);
@@ -110,7 +110,7 @@ const LobbyScreen = ({ route, navigation }) => {
     const removeFromWaiting = async () => {
         let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
         let waitingPlayersObj = waitingPlayers.val();
-        const waitingIDs = Object.keys(waitingPlayersObj) || [];
+        const waitingIDs = Object.keys(waitingPlayersObj) || null;
         waitingIDs.forEach((ID) => {
             if (waitingPlayersObj[ID] == playerName) {
                 try {
@@ -125,7 +125,7 @@ const LobbyScreen = ({ route, navigation }) => {
     const removeFromReady = async () => {
         let readyPlayers = await firebase.database().ref(`game/${session}/ready`).once('value');
         let readyPlayersObj = readyPlayers.val();
-        const readyIDs = Object.keys(readyPlayersObj) || [];
+        const readyIDs = Object.keys(readyPlayersObj) || null;
         readyIDs.forEach((ID) => {
             if (readyPlayersObj[ID] == playerName) {
                 try {
@@ -140,7 +140,7 @@ const LobbyScreen = ({ route, navigation }) => {
     const removeFromPlayers = async () => {
         let activePlayers = await firebase.database().ref(`players/${session}`).once('value');
         let activePlayersObj = activePlayers.val();
-        const activeIDs = Object.keys(activePlayersObj) || [];
+        const activeIDs = Object.keys(activePlayersObj) || null;
         activeIDs.forEach((ID) => {
             if (activePlayersObj[ID] == playerName) {
                 try {

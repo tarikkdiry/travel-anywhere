@@ -4,7 +4,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import * as firebase from 'firebase';
 import BackArrow from '../../assets/back_arrow.png';
 
-const ActiveGames = ({ route, navigation, userEmail}) => {
+const ActiveGames = ({ route, navigation }) => {
+
+    const { userEmail } = route.params;
+
     return (
         <View style={styles.container}>
             <View style={styles.top}>
@@ -43,9 +46,7 @@ const styles = StyleSheet.create({
     bottom: {
         flex: 3,
         flexDirection: 'column',
-        // justifyContent: 'center',
         alignItems: 'center',
-        // backgroundColor: 'red'
     },
     text: {
         fontSize: 40, 

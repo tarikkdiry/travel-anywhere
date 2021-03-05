@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import BackArrow from '../../assets/back_arrow.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -6,7 +6,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 // API
 import { login, signup, signout } from '../api/CardsApi';
 
-const WelcomeScreen = ({ route, navigation }) => {
+const WelcomeScreen = ({ route, navigation, userEmail }) => {
+    const [user, setUser] = useState(userEmail);
+
 
     onSignedOut = () => {
         console.log('Signed out!');
@@ -32,7 +34,7 @@ const WelcomeScreen = ({ route, navigation }) => {
             </View>
             <View style={styles.bottom}>
                 <View style={styles.buttons}> 
-                    {/* <Button 
+                    <Button 
                         title="Create Game"
                         style={styles.button}
                         color="white"
@@ -61,9 +63,9 @@ const WelcomeScreen = ({ route, navigation }) => {
 
                             })
                         }}
-                    /> */}
+                    />
                     <Button 
-                        title="Begin!"
+                        title="Single Player"
                         style={styles.button}
                         color="white"
                         onPress={() => {
