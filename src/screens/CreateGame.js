@@ -6,6 +6,8 @@ import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const CreateGameScreen = ({ route, navigation }) => {
+    const { userEmail } = route.params;
+
     const [hostName, setHostName] = useState(''); // Potentially use login data
     const [gameCode, setGameCode] = useState('') // Four Character code
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -32,6 +34,8 @@ const CreateGameScreen = ({ route, navigation }) => {
             // Create new game session under 'game/'
             await firebase.database().ref('game/' + session).set({
                 host: name,
+                hostEmail: userEmail,
+                playerCount: 1,
                 status: 'lobby',
                 timestamp: Date.now(),
                 waiting: [],

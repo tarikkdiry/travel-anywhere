@@ -7,6 +7,7 @@ import LoadingScreen from '../components/organisms/LoadingScreen';
 
 const JoinGameScreen = ({ route, navigation }) => {
     const [playerName, setPlayerName] = useState('');
+    const [playerEmail, setPlayerEmail] = useState(firebase.auth().currentUser.email);
     const [isLoading, setIsLoading] = useState(false);
     const [gameCode, setGameCode]  = useState('');
     const [error, setError] = useState('');

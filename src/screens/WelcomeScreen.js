@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Button, Image } from 'react-native';
 import BackArrow from '../../assets/back_arrow.png';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import firebase from 'firebase';
 
 // API
 import { login, signup, signout } from '../api/CardsApi';
 
-const WelcomeScreen = ({ route, navigation, userEmail }) => {
-    const [user, setUser] = useState(userEmail);
-
+const WelcomeScreen = ({ route, navigation }) => {
+    const [userEmail, setUserEmail] = useState(firebase.auth().currentUser.email);
 
     onSignedOut = () => {
         console.log('Signed out!');
@@ -30,7 +30,7 @@ const WelcomeScreen = ({ route, navigation, userEmail }) => {
                     style={styles.arrow}
                 />
             </TouchableOpacity>
-                <Text style={styles.text}>Working Title</Text> 
+                <Text style={styles.text}>Periventure</Text> 
             </View>
             <View style={styles.bottom}>
                 <View style={styles.buttons}> 
@@ -40,7 +40,7 @@ const WelcomeScreen = ({ route, navigation, userEmail }) => {
                         color="white"
                         onPress={() => {
                             navigation.push('CreateGame', {
-
+                                userEmail: userEmail
                             })
                         }}
                     />

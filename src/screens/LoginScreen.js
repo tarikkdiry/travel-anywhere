@@ -4,6 +4,7 @@ import AuthForm from '../components/organisms/AuthForm';
 
 // API
 import {login, signup, subscribeToAuthChanges} from '../api/CardsApi';
+import firebase from 'firebase';
 
 class LoginScreen extends Component {
     constructor(props) {
@@ -20,17 +21,8 @@ class LoginScreen extends Component {
 
     onAuthStateChanged = (user) => {
         if (user !== null) {
-            console.log(user);
-            this.props.navigation.push('Welcome'); //Might be navigation.navigate
+            this.props.navigation.push('Welcome') //Might be navigation.navigate
         }
-
-
-        // let test = Object.values(user).map((item, index) => {
-        //     console.log('===============ITEM===============')
-        //     console.log(item);
-        // })
-        // console.log('USER: ')
-        // console.log(Object.keys(user));
     }
 
     switchAuthMode = () => {

@@ -31,6 +31,18 @@ const LobbyScreen = ({ route, navigation }) => {
             setReadyCount(snapshot.numChildren());
         });
 
+        const updatePlayerCount = playerRef.on('value', (snapshot) => {
+            if (snapshot.numChildren() !== players.length) {
+                try {
+                    gameRef.update({
+                        playerCount: snapshot.numChildren()
+                    })
+                } catch (err) {
+                    console.log('Unable to update playerCount...');
+                }
+            }
+        })
+
         // Grab number of players to determine if game can be started or not
         const listenForPlayers = playerRef.on('value', (snapshot) => { 
             const fetchedPlayers = [];
