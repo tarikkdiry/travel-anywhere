@@ -10,10 +10,10 @@ import ActiveGamesItem from '../components/atoms/ActiveGamesItem';
 import ActiveGamesList from '../components/molecules/ActiveGamesList';
 
 const ActiveGames = ({ route, navigation }) => {
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [playerCount, setPlayerCount] = useState('');
-    const [sessionDetailsHosting, setSessionDetailsHosting] = useState([{session: '', playerCount: ''}]);
-    const [sessionDetailsPlayer, setSessionDetailsPlayer] = useState([{session: '', playerCount: ''}]);
+    const [sessionDetailsHosting, setSessionDetailsHosting] = useState({});
+    const [sessionDetailsPlayer, setSessionDetailsPlayer] = useState({});
 
     const { userEmail } = route.params;
     const gameRef = firebase.database().ref(`game`);
@@ -21,43 +21,46 @@ const ActiveGames = ({ route, navigation }) => {
 
     useEffect(() => {
         
-        // getPlayerCount('WPLH');
-
-        // REFACTOR: 
-        // Build each object step by step and push to state array of objects
-        // Push state array to ActiveGamesList component
-        // Set isLoading to false
+        // TODO
+        // Might need to be gameRef.once
+        // Prevent repeated state setting 
         const getActiveGames = gameRef.on('value', (snapshot) => {
-            const fetchedHostedGames = [];
-            const fetchedPlayerGames = [];
-
-            const fetchedSession = '';
-            const fetchedPlayerCount = '';
-
-
+            let hostedSession = {};
             snapshot.forEach((child) => {
-                if(child.val().hostEmail == userEmail) {
-                    fetchedHostedGames.push({
-                        session: child.key,
-                        playerCount: getPlayerCount(child.key)
-                    })
-                    // sessionDetailsHosting.push(fetchedHostedGames);
-                    console.log('Fetched Hosted Games: ' + fetchedHostedGames);
+                // let hostedSession = {...sessionDetailsHosting};
+                if (child.val().hostEmail === userEmail) {
+                    hostedSession[child.key] = {session: child.key, playerCount: child.val().playerCount}
+                    // console.log(hostedSession);
+                    // if (!Object.values(sessionDetailsHosting).includes(child.key)) { // Might need to change to host email
+                    // if (hostedSession !== sessionDetailsHosting) {
+                    //     setSessionDetailsHosting(hostedSession); // Repeatedly updating the state
+                    //     console.log(sessionDetailsHosting);
+                    // }
+                    // console.log(sessionDetailsHosting);
+                    // console.log(hostedSession);
                 }
-            })
-        })
+            });
+        });
 
+        return () => {
+            gameRef.off('value', getActiveGames);
+        }
     });
 
+    // const addHostingHandler = (hostingSession) => {
+    //     const newHosting = {...sessionDetailsHosting};
+    //     console.log(newHosting);
+    //     // newHosting[hostingSession.]
+    // };
 
     // Get Player count based on requested session name
-    const getPlayerCount = async (session) => {
-        let playerRef = firebase.database().ref(`players/${session}`);
-        playerRef.on('value', (snapshot) => {
-            console.log(snapshot.numChildren());
-            setPlayerCount(snapshot.numChildren())
-        })
-    }
+    // const getPlayerCount = async (session) => {
+    //     let playerRef = firebase.database().ref(`players/${session}`);
+    //     playerRef.on('value', (snapshot) => {
+    //         console.log(snapshot.numChildren());
+    //         setPlayerCount(snapshot.numChildren())
+    //     })
+    // };
 
     return (
         <>
@@ -80,8 +83,7 @@ const ActiveGames = ({ route, navigation }) => {
                     </View>
                     <View style={styles.bottom}>
                         <Text>Host vs. Guest</Text>
-                        <ActiveGamesList sessionListHost={sessionDetailsHosting}/>
-                        
+                        {/* <ActiveGamesList sessionListHost={sessionDetailsHosting}/> */}
                     </View>
                 </View> ) : (
                     <LoadingScreen 

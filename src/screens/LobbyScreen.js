@@ -32,7 +32,7 @@ const LobbyScreen = ({ route, navigation }) => {
         });
 
         const updatePlayerCount = playerRef.on('value', (snapshot) => {
-            if (snapshot.numChildren() !== players.length) {
+            if (snapshot.numChildren() !== players.length && snapshot.exists()) {
                 try {
                     gameRef.update({
                         playerCount: snapshot.numChildren()

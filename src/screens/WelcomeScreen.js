@@ -60,7 +60,7 @@ const WelcomeScreen = ({ route, navigation }) => {
                         color="white"
                         onPress={() => {
                             navigation.push('ActiveGames', {
-
+                                userEmail: userEmail
                             })
                         }}
                     />
