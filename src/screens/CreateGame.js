@@ -40,7 +40,7 @@ const CreateGameScreen = ({ route, navigation }) => {
                 timestamp: Date.now(),
                 waiting: [],
                 ready: []
-            });3
+            });
             
             console.log('Game session created!');
 
