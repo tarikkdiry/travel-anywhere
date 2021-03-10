@@ -7,13 +7,15 @@ import BackArrow from '../../assets/back_arrow.png';
 
 //TESTING
 import ActiveGamesItem from '../components/atoms/ActiveGamesItem';
+import ActiveGamesMenu from '../components/organisms/ActiveGamesMenu';
 import ActiveGamesList from '../components/molecules/ActiveGamesList';
 
 const ActiveGames = ({ route, navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [playerCount, setPlayerCount] = useState('');
-    const [sessionDetailsHosting, setSessionDetailsHosting] = useState({});
+    const [sessionDetailsHosting, setSessionDetailsHosting] = useState([]);
     const [sessionDetailsPlayer, setSessionDetailsPlayer] = useState({});
+    const [isHosting, setIsHosting] = useState(false);
 
     const { userEmail } = route.params;
     const gameRef = firebase.database().ref(`game`);
@@ -25,21 +27,20 @@ const ActiveGames = ({ route, navigation }) => {
         // Might need to be gameRef.once
         // Prevent repeated state setting 
         const getActiveGames = gameRef.on('value', (snapshot) => {
-            let hostedSession = {};
+            let hostedSession = [];
             snapshot.forEach((child) => {
                 // let hostedSession = {...sessionDetailsHosting};
                 if (child.val().hostEmail === userEmail) {
-                    hostedSession[child.key] = {session: child.key, playerCount: child.val().playerCount}
-                    // console.log(hostedSession);
-                    // if (!Object.values(sessionDetailsHosting).includes(child.key)) { // Might need to change to host email
-                    // if (hostedSession !== sessionDetailsHosting) {
-                    //     setSessionDetailsHosting(hostedSession); // Repeatedly updating the state
-                    //     console.log(sessionDetailsHosting);
-                    // }
-                    // console.log(sessionDetailsHosting);
-                    // console.log(hostedSession);
+                    let sessionId = child.key;
+                    let pCount = child.val().playerCount;
+                    hostedSession.push([sessionId, pCount]);
                 }
             });
+            if (sessionDetailsHosting !== hostedSession) {
+                setSessionDetailsHosting(hostedSession);
+                // console.log('========================');
+                // console.log(sessionDetailsHosting);
+            }
         });
 
         return () => {
@@ -47,20 +48,10 @@ const ActiveGames = ({ route, navigation }) => {
         }
     });
 
-    // const addHostingHandler = (hostingSession) => {
-    //     const newHosting = {...sessionDetailsHosting};
-    //     console.log(newHosting);
-    //     // newHosting[hostingSession.]
-    // };
-
-    // Get Player count based on requested session name
-    // const getPlayerCount = async (session) => {
-    //     let playerRef = firebase.database().ref(`players/${session}`);
-    //     playerRef.on('value', (snapshot) => {
-    //         console.log(snapshot.numChildren());
-    //         setPlayerCount(snapshot.numChildren())
-    //     })
-    // };
+    // Switch render based on user selection for games hosting vs participating in
+    const switchModeHandler = () => {
+        setIsHosting(!isHosting);
+    };
 
     return (
         <>
@@ -79,11 +70,18 @@ const ActiveGames = ({ route, navigation }) => {
                             style={styles.arrow}
                         />
                         </TouchableOpacity>
-                        <Text style={styles.text}>Active Games</Text> 
+                        <Text style={styles.title}>Active Games</Text> 
                     </View>
                     <View style={styles.bottom}>
-                        <Text>Host vs. Guest</Text>
-                        {/* <ActiveGamesList sessionListHost={sessionDetailsHosting}/> */}
+                        <View style={styles.menu}>
+                            <TouchableOpacity onPress={() => switchModeHandler()}>
+                                <Text style={isHosting ? styles.activeText : styles.text}>Active</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => switchModeHandler()}>
+                                <Text style={isHosting ? styles.text : styles.activeText}>Hosting</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <ActiveGamesList selection={isHosting} sessionListHost={sessionDetailsHosting}/>
                     </View>
                 </View> ) : (
                     <LoadingScreen 
@@ -109,14 +107,34 @@ const styles = StyleSheet.create({
     bottom: {
         flex: 3,
         flexDirection: 'column',
-        // alignItems: 'center',
+        paddingHorizontal: '5%'
     },
-    text: {
+    menu: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        color: 'white', 
+        fontFamily: 'regular',
+        borderBottomColor: 'white',
+        paddingBottom: 50,
+    },
+    title: {
         fontSize: 40, 
         color: 'white', 
         fontFamily: 'regular',
         marginTop: '20%',
         padding: 20
+    },
+    text: {
+        color: 'gray',
+        fontSize: 25,
+        fontFamily: 'regular',
+    },
+    activeText: {
+        // color: '#F28D77',
+        color: '#F28D77',
+        fontSize: 25,
+        fontFamily: 'regular',
     },
     arrow: {
         height: 50,

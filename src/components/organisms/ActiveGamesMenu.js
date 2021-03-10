@@ -3,7 +3,7 @@ import { StyleSheet, View, TextInput, Text, Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ActiveGamesList from '../molecules/ActiveGamesList';
 
-const ActiveGamesMenu = ({ hosting, playing }) => {
+const ActiveGamesMenu = ({ hosting, sessionListPlayer }) => {
     const [isHosting, setIsHosting] = useState(false);
 
     const switchModeHandler = () => {
@@ -24,7 +24,7 @@ const ActiveGamesMenu = ({ hosting, playing }) => {
             <View style={styles.list}>
                 <ActiveGamesList 
                     sessionListHost={hosting}
-                    sessionListPlayer={playing}
+                    sessionListPlayer={sessionListPlayer}
                 />
             </View>
         </View>
@@ -34,18 +34,22 @@ const ActiveGamesMenu = ({ hosting, playing }) => {
 const styles = StyleSheet.create({
     container: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
     },
     menu: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        fontSize: 30, 
         color: 'white', 
         fontFamily: 'regular',
     },
     list: {
         display: 'flex'
+    },
+    text: {
+        color: 'white',
+        fontSize: 25,
+        fontFamily: 'regular',
     }
 })
 
