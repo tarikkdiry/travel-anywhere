@@ -18,28 +18,30 @@ const ActiveGames = ({ route, navigation }) => {
     const [isHosting, setIsHosting] = useState(false);
 
     const { userEmail } = route.params;
+
+    // Firebase refs
     const gameRef = firebase.database().ref(`game`);
-    // const playerRef = firebase.database().ref(`players`);
+    const playerRef = firebase.database().ref(`players`);
 
     useEffect(() => {
-        
-        // TODO
-        // Might need to be gameRef.once
-        // Prevent repeated state setting 
         const getActiveGames = gameRef.on('value', (snapshot) => {
-            let hostedSession = [];
-            snapshot.forEach((child) => {
-                // let hostedSession = {...sessionDetailsHosting};
-                if (child.val().hostEmail === userEmail) {
-                    let sessionId = child.key;
-                    let pCount = child.val().playerCount;
-                    hostedSession.push([sessionId, pCount]);
+            try {
+                setIsLoading(true);
+                let hostedSession = [];
+                snapshot.forEach((child) => {
+                    if (child.val().hostEmail === userEmail) {
+                        let sessionId = child.key;
+                        let pCount = child.val().playerCount;
+                        hostedSession.push([sessionId, pCount]);
+                    }
+                });
+
+                // Ensure the state is only updated once and only when there is an update
+                if (JSON.stringify(sessionDetailsHosting) !== JSON.stringify(hostedSession)) {
+                    setSessionDetailsHosting(hostedSession);
                 }
-            });
-            if (sessionDetailsHosting !== hostedSession) {
-                setSessionDetailsHosting(hostedSession);
-                // console.log('========================');
-                // console.log(sessionDetailsHosting);
+            } catch (err) {
+                console.log(err);
             }
         });
 
@@ -49,8 +51,8 @@ const ActiveGames = ({ route, navigation }) => {
     });
 
     // Switch render based on user selection for games hosting vs participating in
-    const switchModeHandler = () => {
-        setIsHosting(!isHosting);
+    const switchModeHandler = (status) => {
+        setIsHosting(status);
     };
 
     return (
@@ -74,11 +76,11 @@ const ActiveGames = ({ route, navigation }) => {
                     </View>
                     <View style={styles.bottom}>
                         <View style={styles.menu}>
-                            <TouchableOpacity onPress={() => switchModeHandler()}>
-                                <Text style={isHosting ? styles.activeText : styles.text}>Active</Text>
+                            <TouchableOpacity onPress={() => switchModeHandler(false)}>
+                                <Text style={isHosting ? styles.text : styles.activeText}>Active</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => switchModeHandler()}>
-                                <Text style={isHosting ? styles.text : styles.activeText}>Hosting</Text>
+                            <TouchableOpacity onPress={() => switchModeHandler(true)}>
+                                <Text style={isHosting ? styles.activeText : styles.text}>Hosting</Text>
                             </TouchableOpacity>
                         </View>
                         <ActiveGamesList selection={isHosting} sessionListHost={sessionDetailsHosting}/>

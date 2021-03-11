@@ -9,6 +9,7 @@ const CreateGameScreen = ({ route, navigation }) => {
     const { userEmail } = route.params;
 
     const [hostName, setHostName] = useState(''); // Potentially use login data
+    const [hostEmail, setHostEmail] = useState(firebase.auth().currentUser.email);
     const [gameCode, setGameCode] = useState('') // Four Character code
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +46,11 @@ const CreateGameScreen = ({ route, navigation }) => {
             console.log('Game session created!');
 
             // Push UID and Name for host to /players and /game/session
-            let ref = await firebase.database().ref(`players/${session}`).push(hostName)
+            let ref = await firebase.database().ref(`players/${session}`).push({
+                playerName: hostName,
+                playerEmail: hostEmail,
+                role: 'Host'
+            })
 
             // Push {uid, name} to players/session
             .then(
@@ -58,7 +63,6 @@ const CreateGameScreen = ({ route, navigation }) => {
                 console.log(`${name} is on their way to the lobby!`)
             )
             setGameCode(session);
-            // setIsLoading(false);
         } catch (err) {
             console.log("Sorry! Can't create game... -> " + err.message);
             setIsLoading(false);

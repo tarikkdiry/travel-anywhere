@@ -36,21 +36,18 @@ const JoinGameScreen = ({ route, navigation }) => {
         setIsLoading(true);
         let sessionOpen = await canJoinGame(session);
         if (sessionOpen) {
-            try {
-                let ref = await firebase.database().ref(`players/${session}`).push(playerName)
-                await firebase.database().ref(`game/${session}/waiting/${ref.key}`).set(playerName)
-                .then(
-                    console.log(`${name} is joining the game!`),
-                    navigation.navigate('Lobby', {
-                        session: gameCode,
-                        playerName: playerName 
-                    })
-                )
-            } catch(err) {
-                setError(err);
-                console.log("Unable to join: " + err);
-                setIsLoading(false);
-            }
+            let ref = firebase.database().ref(`players/${session}`).push({
+                playerName: playerName,
+                playerEmail: playerEmail,
+                role: 'Player'
+            })
+            firebase.database().ref(`game/${session}/waiting/${ref.key}`).set(playerName)
+            console.log(`${name} is joining the game!`),
+            navigation.navigate('Lobby', {
+                session: gameCode,
+                playerName: playerName,
+                playerKey: ref.key 
+            })
         } else {
             console.log("Session is not open!"),
             setIsLoading(false)

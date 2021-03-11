@@ -9,7 +9,7 @@ import PlayerList from '../components/molecules/PlayerList';
 
 const LobbyScreen = ({ route, navigation }) => {
     // Route params
-    const { session, hostName, playerName } = route.params;
+    const { session, hostName, playerName, playerKey } = route.params;
 
     const [currentHost, setCurrentHost] = useState(hostName);
     const [currentPlayer, setCurrentPlayer] = useState(playerName);
@@ -40,16 +40,19 @@ const LobbyScreen = ({ route, navigation }) => {
                 } catch (err) {
                     console.log('Unable to update playerCount...');
                 }
+            } else {
+                return;
             }
         })
 
         // Grab number of players to determine if game can be started or not
         const listenForPlayers = playerRef.on('value', (snapshot) => { 
             const fetchedPlayers = [];
+            
             snapshot.forEach((childSnapshot) => {
                 fetchedPlayers.push({
-                    id: childSnapshot.key, 
-                    value: childSnapshot.val()
+                    id: childSnapshot.val().playerEmail, 
+                    value: childSnapshot.val().playerName
                 });
             });
 
@@ -102,59 +105,66 @@ const LobbyScreen = ({ route, navigation }) => {
     // Remove player from 'waiting' and add them to 'ready'
     const readyUp = async () => {
         let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
-        let waitingPlayersObj = waitingPlayers.val();
-        const waitingIDs = Object.keys(waitingPlayersObj) || null;
-        waitingIDs.forEach((ID) => {
-            if (waitingPlayersObj[ID] == playerName) {
-                firebase.database().ref(`game/${session}/ready/${ID}`).set(playerName);
-                try {
-                    firebase.database().ref(`game/${session}/waiting/${ID}`).remove();
-                } catch(err) {
-                    console.log(`Can't ready up: ${err}`);
-                }
-            };
-        });
-        console.log(`${playerName} is ready!`);
+        if (waitingPlayers !== null) {
+            let waitingPlayersObj = waitingPlayers.val();
+            const waitingIDs = Object.keys(waitingPlayersObj) || null;
+            waitingIDs.forEach((ID) => {
+                if (waitingPlayersObj[ID] == playerName) {
+                    firebase.database().ref(`game/${session}/ready/${ID}`).set(playerName);
+                    try {
+                        firebase.database().ref(`game/${session}/waiting/${ID}`).remove();
+                    } catch(err) {
+                        console.log(`Can't ready up: ${err}`);
+                    }
+                };
+            });
+            console.log(`${playerName} is ready!`);
+        }
     };
 
     // ================================================HELPERS================================================
 
     const removeFromWaiting = async () => {
         let waitingPlayers = await firebase.database().ref(`game/${session}/waiting`).once('value');
-        let waitingPlayersObj = waitingPlayers.val();
-        const waitingIDs = Object.keys(waitingPlayersObj) || null;
-        waitingIDs.forEach((ID) => {
-            if (waitingPlayersObj[ID] == playerName) {
-                try {
-                    firebase.database().ref(`game/${session}/waiting/${ID}`).remove();
-                } catch(err) {
-                    console.log(`Can't leave the game: ${err}`);
-                }
-            } 
-        });
+        if (waitingPlayers !== null) {
+            let waitingPlayersObj = waitingPlayers.val() || null;
+            const waitingIDs = Object.keys(waitingPlayersObj) || null;
+            waitingIDs.forEach((ID) => {
+                if (waitingPlayersObj[ID] == playerName) {
+                    try {
+                        firebase.database().ref(`game/${session}/waiting/${ID}`).remove();
+                    } catch(err) {
+                        console.log(`Can't leave the game: ${err}`);
+                    }
+                } 
+            });
+        }
     };
 
     const removeFromReady = async () => {
         let readyPlayers = await firebase.database().ref(`game/${session}/ready`).once('value');
-        let readyPlayersObj = readyPlayers.val();
-        const readyIDs = Object.keys(readyPlayersObj) || null;
-        readyIDs.forEach((ID) => {
-            if (readyPlayersObj[ID] == playerName) {
-                try {
-                    firebase.database().ref(`game/${session}/ready/${ID}`).remove();
-                } catch(err) {
-                    console.log(`Can't leave the game: ${err}`);
-                }
-            } 
-        });
+        if (readyPlayers !== null) {
+            let readyPlayersObj = readyPlayers.val();
+            const readyIDs = Object.keys(readyPlayersObj);
+            readyIDs.forEach((ID) => {
+                if (readyPlayersObj[ID] == playerName) {
+                    try {
+                        firebase.database().ref(`game/${session}/ready/${ID}`).remove();
+                    } catch(err) {
+                        console.log(`Can't leave the game: ${err}`);
+                    }
+                } 
+            });
+        }
     }
 
     const removeFromPlayers = async () => {
         let activePlayers = await firebase.database().ref(`players/${session}`).once('value');
         let activePlayersObj = activePlayers.val();
         const activeIDs = Object.keys(activePlayersObj) || null;
+
         activeIDs.forEach((ID) => {
-            if (activePlayersObj[ID] == playerName) {
+            if (ID == playerKey) {
                 try {
                     firebase.database().ref(`players/${session}/${ID}`).remove()
                     .then(

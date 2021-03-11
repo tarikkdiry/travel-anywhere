@@ -6,7 +6,7 @@ const ActiveGamesList = ({ sessionListHost, sessionListPlayer, selection }) => {
     return (
         // Query based on hosted games vs participant games
         <View style={styles.container}>
-            {!selection ?
+            {selection ?
                 sessionListHost.map((session, index) => {
                     return (
                         <View key={index}>

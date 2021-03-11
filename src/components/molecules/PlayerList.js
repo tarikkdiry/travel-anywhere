@@ -15,7 +15,7 @@ const PlayerList = ({ players }) => {
                     return(
                         <View key={index} style={styles.item}>
                             <PlayerListItem 
-                                name={player["value"]}
+                                name={player.value}
                                 status="Waiting"
                             />
                         </View>
