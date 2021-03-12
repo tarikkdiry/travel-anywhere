@@ -5,6 +5,9 @@ import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import LoadingScreen from '../components/organisms/LoadingScreen';
 
+// Fire Api
+import * as Fire from '../api/FireApi';
+
 const JoinGameScreen = ({ route, navigation }) => {
     const [playerName, setPlayerName] = useState('');
     const [playerEmail, setPlayerEmail] = useState(firebase.auth().currentUser.email);

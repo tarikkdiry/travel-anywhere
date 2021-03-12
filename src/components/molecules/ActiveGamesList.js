@@ -18,7 +18,16 @@ const ActiveGamesList = ({ sessionListHost, sessionListPlayer, selection }) => {
                     )
                 })
                 : 
-                <Text>Active</Text>
+                sessionListPlayer.map((session, index) => {
+                    return (
+                        <View key={index}>
+                            <ActiveGamesItem 
+                                session={session[0]}
+                                playerCount={session[1]}
+                            />
+                        </View>
+                    )
+                })
             }
         </View>
     )

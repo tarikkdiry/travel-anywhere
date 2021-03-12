@@ -11,10 +11,10 @@ import ActiveGamesMenu from '../components/organisms/ActiveGamesMenu';
 import ActiveGamesList from '../components/molecules/ActiveGamesList';
 
 const ActiveGames = ({ route, navigation }) => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [playerCount, setPlayerCount] = useState('');
     const [sessionDetailsHosting, setSessionDetailsHosting] = useState([]);
-    const [sessionDetailsPlayer, setSessionDetailsPlayer] = useState({});
+    const [sessionDetailsPlayer, setSessionDetailsPlayer] = useState([]);
     const [isHosting, setIsHosting] = useState(false);
 
     const { userEmail } = route.params;
@@ -24,29 +24,57 @@ const ActiveGames = ({ route, navigation }) => {
     const playerRef = firebase.database().ref(`players`);
 
     useEffect(() => {
-        const getActiveGames = gameRef.on('value', (snapshot) => {
+        const getActiveHostedGames = gameRef.on('value', (snapshot) => {
             try {
-                setIsLoading(true);
-                let hostedSession = [];
+                let hostedSessions = [];
                 snapshot.forEach((child) => {
                     if (child.val().hostEmail === userEmail) {
                         let sessionId = child.key;
                         let pCount = child.val().playerCount;
-                        hostedSession.push([sessionId, pCount]);
+                        hostedSessions.push([sessionId, pCount]);
                     }
                 });
 
                 // Ensure the state is only updated once and only when there is an update
-                if (JSON.stringify(sessionDetailsHosting) !== JSON.stringify(hostedSession)) {
-                    setSessionDetailsHosting(hostedSession);
+                if (JSON.stringify(sessionDetailsHosting) !== JSON.stringify(hostedSessions)) {
+                    setSessionDetailsHosting(hostedSessions);
+                    setIsLoading(false);
                 }
             } catch (err) {
                 console.log(err);
             }
         });
 
+        // TODO
+        // Refactor to something more efficient
+        const getActivePlayerGames = playerRef.on('value', (snapshot) => {
+            try {
+                let playerSessions = [];
+                snapshot.forEach((child) => {
+                    child.forEach((baby) => {
+                        let sessionId = child.key;
+                        let pVal = baby.val();
+                        // Passing name as count for now
+                        // MUST REFACTOR
+                        let pName = "as: " + baby.val().playerName;
+                        if (pVal.playerEmail === userEmail && pVal.role === 'Player') {
+                            playerSessions.push([sessionId, pName]);
+                        }
+                    })
+                });
+                
+                // Ensure the state is only updated once and only when there is an update
+                if (JSON.stringify(sessionDetailsPlayer) !== JSON.stringify(playerSessions)) {
+                    setSessionDetailsPlayer(playerSessions);
+                }
+            } catch(err) {
+
+            }
+        });
+
         return () => {
-            gameRef.off('value', getActiveGames);
+            gameRef.off('value', getActiveHostedGames);
+            playerRef.off('value', getActivePlayerGames);
         }
     });
 
@@ -83,7 +111,7 @@ const ActiveGames = ({ route, navigation }) => {
                                 <Text style={isHosting ? styles.activeText : styles.text}>Hosting</Text>
                             </TouchableOpacity>
                         </View>
-                        <ActiveGamesList selection={isHosting} sessionListHost={sessionDetailsHosting}/>
+                        <ActiveGamesList selection={isHosting} sessionListHost={sessionDetailsHosting} sessionListPlayer={sessionDetailsPlayer}/>
                     </View>
                 </View> ) : (
                     <LoadingScreen 
