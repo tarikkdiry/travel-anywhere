@@ -10,6 +10,7 @@ const CreateGameScreen = ({ route, navigation }) => {
 
     const [hostName, setHostName] = useState(''); // Potentially use login data
     const [hostEmail, setHostEmail] = useState(firebase.auth().currentUser.email);
+    const [location, setLocation] = useState('');
     const [gameCode, setGameCode] = useState('') // Four Character code
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +39,7 @@ const CreateGameScreen = ({ route, navigation }) => {
                 hostEmail: userEmail,
                 playerCount: 1,
                 status: 'lobby',
+                location: location,
                 timestamp: Date.now(),
                 waiting: [],
                 ready: []
@@ -152,7 +154,16 @@ const CreateGameScreen = ({ route, navigation }) => {
                             placeholderTextColor={placeholderColor}
                             maxLength={8}
                         />
+                        <TextInput 
+                            style={styles.input} 
+                            onChangeText={location => setLocation(location.toUpperCase())} 
+                            value={location}
+                            placeholder="Where are we?"
+                            placeholderTextColor={placeholderColor}
+                            maxLength={7}
+                        />
                     </View>
+                    
                     <View style={styles.continue}>
                         <View style={styles.button}> 
                             <Button 

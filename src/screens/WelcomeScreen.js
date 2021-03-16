@@ -30,7 +30,7 @@ const WelcomeScreen = ({ route, navigation }) => {
                     style={styles.arrow}
                 />
             </TouchableOpacity>
-                <Text style={styles.text}>Periventure</Text> 
+                <Text style={styles.text}>Allez  Anywhere</Text> 
             </View>
             <View style={styles.bottom}>
                 <View style={styles.buttons}> 
@@ -69,7 +69,7 @@ const WelcomeScreen = ({ route, navigation }) => {
                         style={styles.button}
                         color="white"
                         onPress={() => {
-                            navigation.push('Select', {
+                            navigation.push('SoloLocationSelect', {
 
                             })
                         }}

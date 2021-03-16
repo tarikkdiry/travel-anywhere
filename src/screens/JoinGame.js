@@ -20,24 +20,23 @@ const JoinGameScreen = ({ route, navigation }) => {
         return() => {
             setPlayerName('');
             setIsLoading(false);
-            setError('');
         }
     }, []);
 
     const joinGame = async (session, name) => {
         if (name.length < 1) {
             console.log('You must enter a name!');
-            setError('You must enter a name!');
             return;
         }
 
         if (session.length < 4) {
             console.log('You must enter a proper, 4 character code!');
-            setError('You must enter a proper, 4 character code!');
             return;
         }
         setIsLoading(true);
+
         let sessionOpen = await canJoinGame(session);
+
         if (sessionOpen) {
             let ref = firebase.database().ref(`players/${session}`).push({
                 playerName: playerName,
@@ -52,19 +51,38 @@ const JoinGameScreen = ({ route, navigation }) => {
                 playerKey: ref.key 
             })
         } else {
-            console.log("Session is not open!"),
-            setIsLoading(false)
+            console.log("Session is not open!");
+            setIsLoading(false);
         }
+    };
+
+    // Check if participant is already in the session
+    const isExistingParticipant = (session) => {
+        firebase.database().ref('players/' + session).once('value', snapshot => {
+            snapshot.forEach((child) => {
+                if (child.val().playerEmail === playerEmail) {
+                    return true;
+                }
+            })
+            return false;
+        })
     };
 
     const canJoinGame = async (session) => {
         console.log('Checking if the game is joinable...');
         try {
             let snapshot = await firebase.database().ref(`game`).orderByKey().equalTo(session).once('value');
-            if(snapshot.val() == null) {
-                setError('This game cannot be joined. :(');
+            
+            if (snapshot.val() == null) {
+                console.log('This game cannot be joined. :(');
                 return false;
-            } 
+            }
+
+            if (isExistingParticipant(session)) {
+                console.log('You are already participating in this game...');
+                return false;
+            }
+
             console.log(`Game ${gameCode} found!`);
             return true;
         } catch {

@@ -20,6 +20,10 @@ import CreateGameScreen from './src/screens/CreateGame';
 import JoinGameScreen from './src/screens/JoinGame';
 import LobbyScreen from './src/screens/LobbyScreen';
 
+// GAME
+import SoloLocationSelectScreen from './src/screens/modes/solo/SoloLocationSelect';
+import SoloTopicSelectScreen from './src/screens/modes/solo/SoloTopicSelect';
+
 const Stack = createStackNavigator();
 
 var firebaseConfig = {
@@ -103,6 +107,20 @@ export default function App() {
         <Stack.Screen 
           name="Select"
           component={SelectScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="SoloLocationSelect"
+          component={SoloLocationSelectScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="SoloTopicSelect"
+          component={SoloTopicSelectScreen}
           options={{
             headerShown: false,
           }}

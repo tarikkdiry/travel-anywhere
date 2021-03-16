@@ -43,6 +43,7 @@ const ActiveGames = ({ route, navigation }) => {
             } catch (err) {
                 console.log(err);
             }
+            setIsLoading(false);
         });
 
         // TODO
