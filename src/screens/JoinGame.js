@@ -58,14 +58,16 @@ const JoinGameScreen = ({ route, navigation }) => {
 
     // Check if participant is already in the session
     const isExistingParticipant = (session) => {
+        let isExisting = false;
         firebase.database().ref('players/' + session).once('value', snapshot => {
             snapshot.forEach((child) => {
                 if (child.val().playerEmail === playerEmail) {
-                    return true;
+                    isExisting = true;
                 }
             })
-            return false;
         })
+
+        return isExisting;
     };
 
     const canJoinGame = async (session) => {
