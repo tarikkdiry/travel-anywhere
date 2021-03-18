@@ -1,13 +1,13 @@
-# Travel Anywhere 
+# Allez Anywhere 
 
 Elevate your travel game alone, or with friends by adding some spontaneity to your journey :)
 
 ## Installation
 
-Use git to install Travel Anywhere
+Use git to install Allez Anywhere
 
 ```bash
-git clone https://github.com/tarikkdiry/travel-anywhere
+git clone https://github.com/tarikkdiry/allez-anywhere
 ```
 
 ## Dependencies
