@@ -41,7 +41,7 @@
     "react-test-renderer": "^16.9.0"
   },
   "private": true,
-  "name": "travel-anywhere",
+  "name": "allez-anywhere",
   "version": "1.0.0",
   "jest": {
     "preset": "jest-react-native",
