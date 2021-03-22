@@ -23,6 +23,7 @@ import LobbyScreen from './src/screens/LobbyScreen';
 // GAME
 import SoloLocationSelectScreen from './src/screens/modes/solo/SoloLocationSelect';
 import SoloTopicSelectScreen from './src/screens/modes/solo/SoloTopicSelect';
+import SoloGame from './src/screens/modes/solo/SoloGame';
 
 const Stack = createStackNavigator();
 
@@ -123,6 +124,14 @@ export default function App() {
           component={SoloTopicSelectScreen}
           options={{
             headerShown: false,
+          }}
+        />
+        <Stack.Screen 
+          name="SoloGame"
+          component={SoloGame}
+          options={{
+            headerShown: false,
+            gestureEnabled: false
           }}
         />
         <Stack.Screen 

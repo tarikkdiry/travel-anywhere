@@ -11,7 +11,7 @@ export function signup({ email, password, userName }) {
         console.log(userInfo)
         userInfo.user.updateProfile({ userName: userName })
         .then(() => { 
-
+            console.log(userName);
         })
     })
 }

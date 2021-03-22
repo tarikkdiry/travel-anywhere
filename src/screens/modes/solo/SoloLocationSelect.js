@@ -6,9 +6,22 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import LoadingScreen from '../../../components/organisms/LoadingScreen';
 
 const SoloLocationSelectScreen = ({ route, navigation }) => {
+    const { userEmail } = route.params;
+
     const [isLoading, setIsLoading] = useState(false);
     const [location, setLocation] = useState('');
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const placeholderColor = "#808080"; // or #949494
+
+    // const confirmLocation = (location) => {
+    //     if (location.length < 1) {
+    //         console.log('You must enter a name!');
+    //         setIsModalVisible(true);
+    //         return;
+    //     }
+
+        
+    // };
 
     return (
         <>
@@ -27,17 +40,16 @@ const SoloLocationSelectScreen = ({ route, navigation }) => {
                         style={styles.arrow}
                     />
                     </TouchableOpacity>
-                    {/* <Text style={styles.text}>Where are we?</Text>  */}
                 </View>
                 <View style={styles.bottom}>
                     <View style={styles.userInput}>
                         <TextInput 
                             style={styles.input} 
-                            // onChangeText={name => setPlayerName(name.toUpperCase())} 
+                            onChangeText={loc => setLocation(loc.toUpperCase())} 
                             value={location}
                             placeholder="Where are we?"
                             placeholderTextColor={placeholderColor}
-                            maxLength={7}
+                            maxLength={25}
                         />
                     </View>
                     <View style={styles.continue}>
@@ -45,9 +57,12 @@ const SoloLocationSelectScreen = ({ route, navigation }) => {
                             <Button 
                                 title="Continue"
                                 color="white"
+                                disabled={(location.length > 0) ? false : true}
                                 onPress={() => {
-                                    // joinGame(gameCode, playerName);
-                                    navigation.navigate('SoloTopicSelect');
+                                    navigation.navigate('SoloTopicSelect', {
+                                        location: location,
+                                        userEmail: userEmail
+                                    });
                                 }}
                             />
                         </View>

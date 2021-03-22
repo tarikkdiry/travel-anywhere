@@ -9,9 +9,60 @@ import LoadingScreen from '../../../components/organisms/LoadingScreen';
 // import * as Fire from '../api/FireApi';
 
 const SoloTopicSelectScreen = ({ route, navigation }) => {
+    const { location, userEmail } = route.params;
+
     const [isLoading, setIsLoading] = useState(false);
-    const [location, setLocation] = useState('');
+    const [topic, setTopic] = useState('');
     const placeholderColor = "#808080"; // or #949494
+
+    const createGame = (topic) => {
+        createGameHelper(topic);
+    };
+
+    const createGameHelper = async (session) => {
+        setIsLoading(true);
+
+        try {
+            // Create new game session under 'solo/'
+            await firebase.database().ref(`solo/${session}`).set({
+                hostEmail: userEmail,
+                location: location,
+                timestamp: Date.now(),
+                topic: topic
+            }).then(
+                console.log('Game session created!'),
+                setIsLoading(false)
+            )
+
+            navigation.navigate('SoloGame', {
+                location: location,
+                topic: topic
+            });
+
+            setIsLoading(false);
+
+        } catch(err) {
+            console.log(err);
+            setIsLoading(false);
+        }
+    };
+
+    const topicHandler = (topic) => {
+        setTopic(topic);
+    };
+
+     // Generate random 4 character code for game session creation
+     const generateGameCode = () => {
+        let result = '';
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let len = characters.length;
+
+        for (let i = 0; i < 4; i++) {
+            result += characters.charAt(Math.floor(Math.random() * len));
+        }
+
+        return result;
+    };
 
     return (
         <>
@@ -30,26 +81,22 @@ const SoloTopicSelectScreen = ({ route, navigation }) => {
                         style={styles.arrow}
                     />
                     </TouchableOpacity>
-                    {/* <Text style={styles.text}>Where are we?</Text>  */}
                 </View>
                 <View style={styles.bottom}>
                     <View style={styles.userInput}>
-                        <TextInput 
-                            style={styles.input} 
-                            // onChangeText={name => setPlayerName(name.toUpperCase())} 
-                            value={location}
-                            placeholder="What are we doing?"
-                            placeholderTextColor={placeholderColor}
-                            maxLength={7}
-                        />
+                        <TouchableOpacity onPress={() => setTopic('Discover')}><Text style={[styles.topicText, {color: '#1B63F2'}]}>Discover</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => setTopic('Food')}><Text style={[styles.topicText, {color: '#F20530'}]}>Food</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => setTopic('People')}><Text style={[styles.topicText, {color: '#009C6F'}]}>People</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => setTopic('Surprise')}><Text style={[styles.topicText, {color: '#F28D77'}]}>...Surprise me?</Text></TouchableOpacity>
                     </View>
                     <View style={styles.continue}>
                         <View style={styles.button}> 
                             <Button 
                                 title="Continue"
                                 color="white"
+                                disabled={(topic.length > 0) ? false: true}
                                 onPress={() => {
-                                    // joinGame(gameCode, playerName);
+                                    createGame(generateGameCode(), topic);
                                 }}
                             />
                         </View>
@@ -78,7 +125,7 @@ const styles = StyleSheet.create({
         flex: 2,
     },
     bottom: {
-        flex: 3,
+        flex: 4,
         flexDirection: 'column',
         justifyContent: 'center',
     },
@@ -88,6 +135,14 @@ const styles = StyleSheet.create({
         fontFamily: 'regular',
         marginTop: '20%',
         padding: 20
+    },
+    topicText: {
+        display: 'flex',
+        fontSize: 30, 
+        color: 'white', 
+        fontFamily: 'regular',
+        // marginTop: '20%',
+        padding: 20,
     },
     arrow: {
         height: 50,

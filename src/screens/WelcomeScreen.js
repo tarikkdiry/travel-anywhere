@@ -8,6 +8,8 @@ import firebase from 'firebase';
 import { login, signup, signout } from '../api/CardsApi';
 
 const WelcomeScreen = ({ route, navigation }) => {
+    const { userName } = route.params;
+
     const [userEmail, setUserEmail] = useState(firebase.auth().currentUser.email);
 
     onSignedOut = () => {
@@ -65,12 +67,12 @@ const WelcomeScreen = ({ route, navigation }) => {
                         }}
                     />
                     <Button 
-                        title="Single Player"
+                        title="Solo Travel"
                         style={styles.button}
                         color="white"
                         onPress={() => {
                             navigation.push('SoloLocationSelect', {
-
+                                userEmail: userEmail
                             })
                         }}
                     />

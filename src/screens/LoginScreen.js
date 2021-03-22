@@ -21,7 +21,9 @@ class LoginScreen extends Component {
 
     onAuthStateChanged = (user) => {
         if (user !== null) {
-            this.props.navigation.push('Welcome') //Might be navigation.navigate
+            this.props.navigation.push('Welcome', {
+                // userName: user.userName
+            }) //Might be navigation.navigate
         }
     }
 

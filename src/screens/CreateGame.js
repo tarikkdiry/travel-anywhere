@@ -34,7 +34,7 @@ const CreateGameScreen = ({ route, navigation }) => {
         setIsLoading(true);
         try {
             // Create new game session under 'game/'
-            await firebase.database().ref('game/' + session).set({
+            await firebase.database().ref(`game/${session}`).set({
                 host: name,
                 hostEmail: userEmail,
                 playerCount: 1,
@@ -48,7 +48,7 @@ const CreateGameScreen = ({ route, navigation }) => {
             console.log('Game session created!');
 
             // Push UID and Name for host to /players and /game/session
-            let ref = await firebase.database().ref(`players/${session}`).push({
+            await firebase.database().ref(`players/${session}`).push({
                 playerName: hostName,
                 playerEmail: hostEmail,
                 role: 'Host'

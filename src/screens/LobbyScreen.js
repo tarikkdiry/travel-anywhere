@@ -8,7 +8,6 @@ import LoadingScreen from '../components/organisms/LoadingScreen';
 import PlayerList from '../components/molecules/PlayerList';
 
 const LobbyScreen = ({ route, navigation }) => {
-    // Route params
     const { session, hostName, playerName, playerKey } = route.params;
 
     const [currentHost, setCurrentHost] = useState(hostName);

@@ -11,13 +11,13 @@ import ActiveGamesMenu from '../components/organisms/ActiveGamesMenu';
 import ActiveGamesList from '../components/molecules/ActiveGamesList';
 
 const ActiveGames = ({ route, navigation }) => {
+    const { userEmail } = route.params;
+
     const [isLoading, setIsLoading] = useState(true);
     const [playerCount, setPlayerCount] = useState('');
     const [sessionDetailsHosting, setSessionDetailsHosting] = useState([]);
     const [sessionDetailsPlayer, setSessionDetailsPlayer] = useState([]);
     const [isHosting, setIsHosting] = useState(false);
-
-    const { userEmail } = route.params;
 
     // Firebase refs
     const gameRef = firebase.database().ref(`game`);
