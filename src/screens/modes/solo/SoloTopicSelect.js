@@ -35,6 +35,7 @@ const SoloTopicSelectScreen = ({ route, navigation }) => {
             )
 
             navigation.navigate('SoloGame', {
+                session: session, 
                 location: location,
                 topic: topic
             });

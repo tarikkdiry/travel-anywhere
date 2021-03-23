@@ -21,7 +21,7 @@ const CardFront = () => {
         <View style={styles.container}>
             <Text style={styles.text}>
                 {/* {cardMessageGenerate()} */}
-                Anywhere
+                Allez!
             </Text>
         </View>
     )
