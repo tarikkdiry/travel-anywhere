@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
 import BackArrow from '../../../../assets/back_arrow.png';
 import * as firebase from 'firebase';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import data from '../../../../data/data.json';
+import { TouchableOpacity, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
+import {translate, usePanGestureHandler} from  "react-native-redash/lib/module/v1";
+import Animated from 'react-native-reanimated';
 import LoadingScreen from '../../../components/organisms/LoadingScreen';
 
 //TESTING
@@ -11,6 +14,9 @@ import Card from '../../../components/molecules/Card';
 const SoloGame = ({route, navigation}) => {
     const { session, location, topic } = route.params;
 
+    const [userSelected, setUserSelected] = useState(false);
+    const [containerHeight, setContainerHeight] = useState(10);
+    const { gestureHandler, translation, velocity, state } = usePanGestureHandler();
     const [isLoading, setIsLoading] = useState(false);
 
     const deleteGame = (session) => {
@@ -38,36 +44,32 @@ const SoloGame = ({route, navigation}) => {
                     {/* <Text style={styles.text}>Join Game</Text>  */}
                 </View>
                 <View style={styles.bottom}>
-                    <Card/>
-                    {/* <View style={styles.userInput}>
-                        <TextInput 
-                            style={styles.input} 
-                            onChangeText={name => setPlayerName(name.toUpperCase())} 
-                            value={playerName}
-                            placeholder="Name"
-                            placeholderTextColor={placeholderColor}
-                            maxLength={7}
-                        />
-                        <TextInput 
-                            style={styles.input} 
-                            onChangeText={code => setGameCode(code.toUpperCase())} 
-                            value={gameCode}
-                            placeholder="Game Code"
-                            placeholderTextColor={placeholderColor}
-                            maxLength={4}
-                        />
+                    <View 
+                        style={styles.card}
+                        onLayout={({
+                            nativeEvent: {
+                                layout: {
+                                    height: h
+                                }
+                            }
+                        }) => setContainerHeight(h)}
+                    >
+                        <ScrollView showsVerticalScrollIndicator={false}>
+                            {data.map((card, index) => {
+                                return (
+                                    <PanGestureHandler key={index} {...gestureHandler}>
+                                        <Animated.View style={{transform: translate(translation)}}>
+                                            <Card 
+                                                key={Math.random().toString()} // Doesn't have to be super secure
+                                                title={card.title}
+                                                description={card.description}
+                                            />
+                                        </Animated.View>
+                                    </PanGestureHandler>
+                                )
+                            })}
+                        </ScrollView>
                     </View>
-                    <View style={styles.continue}>
-                        <View style={styles.button}> 
-                            <Button 
-                                title="Continue"
-                                color="white"
-                                onPress={() => {
-                                    joinGame(gameCode, playerName);
-                                }}
-                            />
-                        </View>
-                    </View> */}
                 </View>
             </View>
             ) : (
@@ -86,15 +88,14 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#03588C',
-        padding: 20
+        padding: 20,
     },
     top: {
-        flex: 2,
+        flex: 1,
     },
     bottom: {
         flex: 3,
         flexDirection: 'column',
-        // justifyContent: 'center',
     },
     text: {
         fontSize: 40, 
@@ -107,8 +108,11 @@ const styles = StyleSheet.create({
         height: 50,
         width: 50,
         tintColor: 'white',
-        marginTop: '20%'
+        marginTop: '20%',
     },
+    card: {
+        // marginTop: '10%'
+    }
 });
 
 export default SoloGame;
