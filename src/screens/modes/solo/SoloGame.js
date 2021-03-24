@@ -4,20 +4,28 @@ import BackArrow from '../../../../assets/back_arrow.png';
 import * as firebase from 'firebase';
 import data from '../../../../data/data.json';
 import { TouchableOpacity, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
-import {translate, usePanGestureHandler} from  "react-native-redash/lib/module/v1";
+import {translate, usePanGestureHandler, withDecay, withOffset} from  "react-native-redash/lib/module/v1";
 import Animated from 'react-native-reanimated';
 import LoadingScreen from '../../../components/organisms/LoadingScreen';
 
 //TESTING
 import Card from '../../../components/molecules/Card';
+import { Dimensions } from 'react-native';
 
 const SoloGame = ({route, navigation}) => {
     const { session, location, topic } = route.params;
 
+    const { height } = Dimensions.get('window');
+    const MARGIN = 16;
+    // const CARD_HEIGHT = DEFAULT_CARD_HEIGHT + MARGIN * 2;
+
     const [userSelected, setUserSelected] = useState(false);
     const [containerHeight, setContainerHeight] = useState(10);
-    const { gestureHandler, translation, velocity, state } = usePanGestureHandler();
     const [isLoading, setIsLoading] = useState(false);
+
+    const { gestureHandler, translation, velocity, state } = usePanGestureHandler();
+    const translateX = withDecay({ value: translation.x, velocity: velocity.x, state });
+    const translateY = withDecay({ value: translation.y, velocity: velocity.y, state, });
 
     const deleteGame = (session) => {
         firebase.database().ref('solo/' + session).remove();
@@ -55,19 +63,27 @@ const SoloGame = ({route, navigation}) => {
                         }) => setContainerHeight(h)}
                     >
                         <ScrollView showsVerticalScrollIndicator={false}>
-                            {data.map((card, index) => {
-                                return (
-                                    <PanGestureHandler key={index} {...gestureHandler}>
-                                        <Animated.View style={{transform: translate(translation)}}>
-                                            <Card 
-                                                key={Math.random().toString()} // Doesn't have to be super secure
-                                                title={card.title}
-                                                description={card.description}
-                                            />
-                                        </Animated.View>
-                                    </PanGestureHandler>
-                                )
-                            })}
+                        <PanGestureHandler {...gestureHandler}>
+                            <Animated.View>
+                                {data.map((card, index) => {
+                                    
+                                    return (
+                                            <Animated.View 
+                                                style={[
+                                                    styles.card, 
+                                                    { transform: [{ translateY }]}
+                                                ]}
+                                            >
+                                                <Card 
+                                                    key={Math.random().toString()} // Doesn't have to be super secure
+                                                    title={card.title}
+                                                    description={card.description}
+                                                />
+                                            </Animated.View>
+                                    )
+                                })}
+                            </Animated.View>
+                        </PanGestureHandler>
                         </ScrollView>
                     </View>
                 </View>
@@ -84,6 +100,7 @@ const SoloGame = ({route, navigation}) => {
 
 const styles = StyleSheet.create({
     container: {
+        ...StyleSheet.absoluteFillObject,
         display: 'flex',
         flex: 1,
         flexDirection: 'column',
@@ -94,7 +111,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     bottom: {
-        flex: 3,
+        flex: 4,
         flexDirection: 'column',
     },
     text: {
@@ -112,6 +129,7 @@ const styles = StyleSheet.create({
     },
     card: {
         // marginTop: '10%'
+        // marginVertical: MARGIN
     }
 });
 

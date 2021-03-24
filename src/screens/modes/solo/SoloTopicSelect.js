@@ -15,11 +15,11 @@ const SoloTopicSelectScreen = ({ route, navigation }) => {
     const [topic, setTopic] = useState('');
     const placeholderColor = "#808080"; // or #949494
 
-    const createGame = (topic) => {
-        createGameHelper(topic);
+    const createGame = (session, topic) => {
+        createGameHelper(session, topic);
     };
 
-    const createGameHelper = async (session) => {
+    const createGameHelper = async (session, topic) => {
         setIsLoading(true);
 
         try {
@@ -50,6 +50,7 @@ const SoloTopicSelectScreen = ({ route, navigation }) => {
 
     const topicHandler = (topic) => {
         setTopic(topic);
+
     };
 
      // Generate random 4 character code for game session creation
@@ -85,22 +86,10 @@ const SoloTopicSelectScreen = ({ route, navigation }) => {
                 </View>
                 <View style={styles.bottom}>
                     <View style={styles.userInput}>
-                        <TouchableOpacity onPress={() => setTopic('Discover')}><Text style={[styles.topicText, {color: '#1B63F2'}]}>Discover</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={() => setTopic('Food')}><Text style={[styles.topicText, {color: '#F20530'}]}>Food</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={() => setTopic('People')}><Text style={[styles.topicText, {color: '#009C6F'}]}>People</Text></TouchableOpacity>
-                        <TouchableOpacity onPress={() => setTopic('Surprise')}><Text style={[styles.topicText, {color: '#F28D77'}]}>...Surprise me?</Text></TouchableOpacity>
-                    </View>
-                    <View style={styles.continue}>
-                        <View style={styles.button}> 
-                            <Button 
-                                title="Continue"
-                                color="white"
-                                disabled={(topic.length > 0) ? false: true}
-                                onPress={() => {
-                                    createGame(generateGameCode(), topic);
-                                }}
-                            />
-                        </View>
+                        <TouchableOpacity onPress={() => createGame(generateGameCode(), 'Discover')}><Text style={[styles.topicText, {color: '#1B63F2'}]}>Discover</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => createGame(generateGameCode(), 'Food')}><Text style={[styles.topicText, {color: '#F20530'}]}>Food</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => createGame(generateGameCode(), 'People')}><Text style={[styles.topicText, {color: '#009C6F'}]}>People</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => createGame(generateGameCode(), 'Everything')}><Text style={[styles.topicText, {color: '#F28D77'}]}>Everything</Text></TouchableOpacity>
                     </View>
                 </View>
             </View>
