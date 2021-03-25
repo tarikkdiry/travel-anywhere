@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TextInput, Modal } from 'react-native';
 import BackArrow from '../../assets/back_arrow.png';
 import * as firebase from 'firebase';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -13,7 +13,8 @@ const JoinGameScreen = ({ route, navigation }) => {
     const [playerEmail, setPlayerEmail] = useState(firebase.auth().currentUser.email);
     const [isLoading, setIsLoading] = useState(false);
     const [gameCode, setGameCode]  = useState('');
-    const [error, setError] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
     const placeholderColor = "#808080"; // or #949494
 
     useEffect(() => {
@@ -51,6 +52,7 @@ const JoinGameScreen = ({ route, navigation }) => {
                 playerKey: ref.key 
             })
         } else {
+            setShowModal(true);
             console.log("Session is not open!");
             setIsLoading(false);
         }
@@ -76,12 +78,14 @@ const JoinGameScreen = ({ route, navigation }) => {
             let snapshot = await firebase.database().ref(`game`).orderByKey().equalTo(session).once('value');
             
             if (snapshot.val() == null) {
-                console.log('This game cannot be joined. :(');
+                // console.log('This game cannot be joined. :(');
+                setModalMessage('This session does not exist!');
                 return false;
             }
 
             if (isExistingParticipant(session)) {
                 console.log('You are already participating in this game...');
+                setModalMessage('You are already in this session, would you like to hop back in?');
                 return false;
             }
 
@@ -108,7 +112,7 @@ const JoinGameScreen = ({ route, navigation }) => {
                         style={styles.arrow}
                         onPress={() => {
                             leaveGame(gameCode, playerName);
-                            navigation.pop()
+                            navigation.pop();
                         }}>
                     <Image 
                         source={BackArrow}
@@ -148,6 +152,9 @@ const JoinGameScreen = ({ route, navigation }) => {
                         </View>
                     </View>
                 </View>
+                <Modal transparent={true} visible={this.state.showModal} animationType='fade'>
+                    
+                </Modal>
             </View>
             ) : (
                 <LoadingScreen 
