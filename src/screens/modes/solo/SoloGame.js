@@ -73,6 +73,7 @@ const SoloGame = ({route, navigation}) => {
                                                     styles.card, 
                                                     { transform: [{ translateY }]}
                                                 ]}
+                                                key={index}
                                             >
                                                 <Card 
                                                     key={Math.random().toString()} // Doesn't have to be super secure
