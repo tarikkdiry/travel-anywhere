@@ -152,7 +152,7 @@ const JoinGameScreen = ({ route, navigation }) => {
                         </View>
                     </View>
                 </View>
-                <Modal transparent={true} visible={this.state.showModal} animationType='fade'>
+                <Modal transparent={true} visible={showModal} animationType='fade'>
                     
                 </Modal>
             </View>

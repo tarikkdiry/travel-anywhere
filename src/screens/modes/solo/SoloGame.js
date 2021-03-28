@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, Image, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TextInput, Dimensions } from 'react-native';
 import BackArrow from '../../../../assets/back_arrow.png';
 import * as firebase from 'firebase';
 import data from '../../../../data/data.json';
 import { TouchableOpacity, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
-import {translate, usePanGestureHandler, withDecay, withOffset} from  "react-native-redash/lib/module/v1";
-import Animated from 'react-native-reanimated';
+import {translate, usePanGestureHandler, withDecay, withOffset, diffClamp} from  "react-native-redash/lib/module/v1";
+import Animated, { Extrapolate, interpolate, add } from 'react-native-reanimated';
 import LoadingScreen from '../../../components/organisms/LoadingScreen';
+
+//CONSTANTS
+import { CARD_HEIGHT } from '../../../components/molecules/Card';
 
 //TESTING
 import Card from '../../../components/molecules/Card';
-import { Dimensions } from 'react-native';
 
 const SoloGame = ({route, navigation}) => {
     const { session, location, topic } = route.params;
@@ -20,12 +22,22 @@ const SoloGame = ({route, navigation}) => {
     // const CARD_HEIGHT = DEFAULT_CARD_HEIGHT + MARGIN * 2;
 
     const [userSelected, setUserSelected] = useState(false);
-    const [containerHeight, setContainerHeight] = useState(10);
+    const [containerHeight, setContainerHeight] = useState(height);
     const [isLoading, setIsLoading] = useState(false);
 
     const { gestureHandler, translation, velocity, state } = usePanGestureHandler();
     const translateX = withDecay({ value: translation.x, velocity: velocity.x, state });
-    const translateY = withDecay({ value: translation.y, velocity: velocity.y, state, });
+    const visibleCards = Math.floor(containerHeight / CARD_HEIGHT);
+
+    const y = diffClamp(
+        withDecay({ 
+            value: translation.y, 
+            velocity: velocity.y, 
+            state,
+        }),
+        -data.length * CARD_HEIGHT + visibleCards * CARD_HEIGHT, 0
+    );
+
 
     const deleteGame = (session) => {
         firebase.database().ref('solo/' + session).remove();
@@ -66,12 +78,35 @@ const SoloGame = ({route, navigation}) => {
                         <PanGestureHandler {...gestureHandler}>
                             <Animated.View>
                                 {data.map((card, index) => {
-                                    
+                                    const positionY = add(y, index * CARD_HEIGHT);
+                                    const isDisappearing = -CARD_HEIGHT;
+                                    const isOnTop = 0;
+                                    const isOnBottom = (visibleCards - 1) * CARD_HEIGHT;
+                                    const isAppearing = visibleCards * CARD_HEIGHT;
+                                    const extraTranslationY = interpolate(positionY, {
+                                        inputRange: [isOnBottom, isAppearing],
+                                        outputRange: [0, -CARD_HEIGHT / 8],
+                                        extrapolate: Extrapolate.CLAMP
+                                    });
+                                    const translateY = add(interpolate(y, {
+                                        inputRange: [-CARD_HEIGHT * index, 0],
+                                        outputRange: [-CARD_HEIGHT * index, 0],
+                                        extrapolate: Extrapolate.CLAMP,
+                                    }), extraTranslationY);
+                                    const scale = interpolate(positionY, {
+                                        inputRange: [isDisappearing, isOnTop, isOnBottom, isAppearing],
+                                        outputRange: [0.7, 1, 1, 0.7],
+                                        extrapolate: Extrapolate.CLAMP
+                                    });
+                                    const opacity = interpolate(positionY, {
+                                        inputRange: [isDisappearing, isOnTop, isOnBottom, isAppearing],
+                                        outputRange: [0.8, 1, 1, 0.8],
+                                    });
                                     return (
                                             <Animated.View 
                                                 style={[
                                                     styles.card, 
-                                                    { transform: [{ translateY }]}
+                                                    { opacity, transform: [{ translateY }, { scale } ]}
                                                 ]}
                                                 key={index}
                                             >
@@ -106,14 +141,15 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#03588C',
-        padding: 20,
     },
     top: {
         flex: 1,
+        padding: 20,
     },
     bottom: {
         flex: 4,
         flexDirection: 'column',
+        padding: 20,
     },
     text: {
         fontSize: 40, 
@@ -129,8 +165,7 @@ const styles = StyleSheet.create({
         marginTop: '20%',
     },
     card: {
-        // marginTop: '10%'
-        // marginVertical: MARGIN
+        
     }
 });
 

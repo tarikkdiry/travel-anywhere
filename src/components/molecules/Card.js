@@ -1,7 +1,12 @@
 import React, { Component, useState } from 'react';
-import { StyleSheet, Text, View, Animated, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Animated, TouchableOpacity, Dimensions } from 'react-native';
 import CardFront from '../atoms/CardFront';
 import CardBack from '../atoms/CardBack';
+
+const { width } = Dimensions.get("window");
+const ratio = 228 / 362;
+export const CARD_WIDTH = width * 0.9;
+export const CARD_HEIGHT = CARD_WIDTH * ratio
 
 class Card extends Component {
     constructor(props) {
@@ -110,7 +115,7 @@ const styles = StyleSheet.create({
         backfaceVisibility: 'hidden',
         backgroundColor: '#F2913D',
         height: 200,
-        width: '100%',
+        width: CARD_WIDTH,
         borderRadius: 15,
         borderTopWidth: 15,
         borderTopColor: '#F2913D',
