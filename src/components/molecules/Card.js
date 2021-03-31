@@ -79,6 +79,7 @@ class Card extends Component {
                         this.flipCard(); // perform the flip
                         this.checkSelected(); // mark this card as flipped already
                     }
+                    this.props.onSelect(this.props.id);
                 }}>
                 <View style={styles.container}>
                     <View>

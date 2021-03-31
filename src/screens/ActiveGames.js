@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import LoadingScreen from '../components/organisms/LoadingScreen';
 import * as firebase from 'firebase';
 import BackArrow from '../../assets/back_arrow.png';
+import Home from '../../assets/home.png';
 
 //TESTING
 import ActiveGamesItem from '../components/atoms/ActiveGamesItem';
@@ -101,6 +102,18 @@ const ActiveGames = ({ route, navigation }) => {
                             style={styles.arrow}
                         />
                         </TouchableOpacity>
+                        {/* <TouchableOpacity 
+                            activeOpacity={0.1}
+                            underlayColor="#DDDDDD"
+                            style={styles.home}
+                            onPress={() => {
+                                navigation.pop()
+                            }}>
+                        <Image 
+                            source={Home}
+                            style={styles.arrow}
+                        />
+                        </TouchableOpacity> */}
                         <Text style={styles.title}>Active Games</Text> 
                     </View>
                     <View style={styles.bottom}>
@@ -168,6 +181,12 @@ const styles = StyleSheet.create({
         fontFamily: 'regular',
     },
     arrow: {
+        height: 50,
+        width: 50,
+        tintColor: 'white',
+        marginTop: '20%'
+    },
+    home: {
         height: 50,
         width: 50,
         tintColor: 'white',

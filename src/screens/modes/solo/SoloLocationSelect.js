@@ -13,15 +13,49 @@ const SoloLocationSelectScreen = ({ route, navigation }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const placeholderColor = "#808080"; // or #949494
 
-    // const confirmLocation = (location) => {
-    //     if (location.length < 1) {
-    //         console.log('You must enter a name!');
-    //         setIsModalVisible(true);
-    //         return;
-    //     }
+    const createGame = (session, topic) => {
+        createGameHelper(session, topic);
+    };
 
-        
-    // };
+    const createGameHelper = async (session) => {
+        setIsLoading(true);
+
+        try {
+            // Create new game session under 'solo/'
+            await firebase.database().ref(`solo/${session}`).set({
+                hostEmail: userEmail,
+                location: location,
+                timestamp: Date.now(),
+            }).then(
+                console.log('Game session created!'),
+                setIsLoading(false)
+            )
+
+            navigation.navigate('SoloGame', {
+                session: session, 
+                location: location,
+            });
+
+            setIsLoading(false);
+
+        } catch(err) {
+            console.log(err);
+            setIsLoading(false);
+        }
+    };
+
+    // Generate random 4 character code for game session creation
+    const generateGameCode = () => {
+        let result = '';
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let len = characters.length;
+
+        for (let i = 0; i < 4; i++) {
+            result += characters.charAt(Math.floor(Math.random() * len));
+        }
+
+        return result;
+    };
 
     return (
         <>
@@ -59,10 +93,7 @@ const SoloLocationSelectScreen = ({ route, navigation }) => {
                                 color="white"
                                 disabled={(location.length > 0) ? false : true}
                                 onPress={() => {
-                                    navigation.navigate('SoloTopicSelect', {
-                                        location: location,
-                                        userEmail: userEmail
-                                    });
+                                    createGame(generateGameCode())
                                 }}
                             />
                         </View>
