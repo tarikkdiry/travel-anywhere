@@ -13,6 +13,7 @@ import { CARD_HEIGHT } from '../../../components/molecules/Card';
 
 //TESTING
 import Card from '../../../components/molecules/Card';
+import NewCard from '../../../components/molecules/NewCard';
 
 const SoloGame = ({route, navigation}) => {
     const { session, location, topic } = route.params;

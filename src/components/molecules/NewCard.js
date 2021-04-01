@@ -7,7 +7,6 @@ const NewCard = () => {
     const [isFlipped, setIsFlipped] = useState();
 
     useEffect(() => {
-
         if (!isFlipped) {
             this.animatedValue = new Animated.Value(0);
             this.value = 0;
@@ -52,7 +51,7 @@ const NewCard = () => {
             onPress={() => {
                 if (this.state.userSelected == false) {
                     flip(); // perform the flip
-                    this.checkSelected(); // mark this card as flipped already
+                    // this.checkSelected(); // mark this card as flipped already
                 }
             }}>
             <View style={styles.container}>
