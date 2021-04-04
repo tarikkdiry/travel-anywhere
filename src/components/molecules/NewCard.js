@@ -25,13 +25,29 @@ const NewCard = () => {
         
     }, []);
 
-    const flip = () => {
+    const flipHandler = () => {
+        // if (!isFlipped) {
+        //     this.animatedValue = new Animated.Value(0);
+        //     this.value = 0;
+        //     this.animatedValue.addListener(({ value }) => {
+        //         this.value = value;
+        //     })
+        //     this.frontInterpolate = this.animatedValue.interpolate({
+        //         inputRange: [0, 180],
+        //         outputRange: ['0deg', '180deg'],
+        //     });
+        //     this.backInterpolate = this.animatedValue.interpolate({
+        //         inputRange: [0, 180],
+        //         outputRange: ['180deg', '360deg']
+        //     })
+        // }
+        setIsFlipped(!isFlipped);
+
         Animated.spring(this.animatedValue, {
             toValue: 180,
             friction: 8,
             tension: 10
         }).start();
-        setIsFlipped(true);
     };
 
     const frontAnimatedStyle = { // rotate
@@ -50,7 +66,7 @@ const NewCard = () => {
         <TouchableOpacity 
             onPress={() => {
                 if (this.state.userSelected == false) {
-                    flip(); // perform the flip
+                    flipHandler(); // perform the flip
                     // this.checkSelected(); // mark this card as flipped already
                 }
             }}>
