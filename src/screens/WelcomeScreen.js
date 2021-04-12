@@ -57,7 +57,7 @@ const WelcomeScreen = ({ route, navigation }) => {
                         }}
                     /> */}
                     <Button 
-                        title="Active Games"
+                        title="Active Adventures"
                         style={styles.button}
                         color="white"
                         onPress={() => {

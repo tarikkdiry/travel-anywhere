@@ -18,11 +18,13 @@ const ActiveGames = ({ route, navigation }) => {
     const [playerCount, setPlayerCount] = useState('');
     const [sessionDetailsHosting, setSessionDetailsHosting] = useState([]);
     const [sessionDetailsPlayer, setSessionDetailsPlayer] = useState([]);
-    const [isHosting, setIsHosting] = useState(false);
+    const [sessionDetailsSolo, setSessionDetailsSolo] = useState([]);
+    const [sessionType, setSessionType] = useState('Active');
 
     // Firebase refs
     const gameRef = firebase.database().ref(`game`);
     const playerRef = firebase.database().ref(`players`);
+    const soloRef = firebase.database().ref(`solo`);
 
     useEffect(() => {
         const getActiveHostedGames = gameRef.on('value', (snapshot) => {
@@ -70,19 +72,46 @@ const ActiveGames = ({ route, navigation }) => {
                     setSessionDetailsPlayer(playerSessions);
                 }
             } catch(err) {
-
+                console.log(err);
             }
+            setIsLoading(false);
+        });
+
+        const getActiveSoloGames = soloRef.on('value', (snapshot) => {
+            try {
+                let soloSessions = [];
+                snapshot.forEach((child) => {
+                    let sessionId = child.key;
+                    let location = child.val().location;
+                    if (child.val().hostEmail === userEmail) {
+                        // soloSessions.push([child.val().location, 'Solo']);
+                        soloSessions.push({
+                            sessionId: sessionId,
+                            location: location,
+                            sessionType: 'Solo'
+                        });
+                    }
+                });
+
+                if (JSON.stringify(sessionDetailsSolo) !== JSON.stringify(soloSessions)) {
+                    setSessionDetailsSolo(soloSessions);
+                }
+            } catch(err) {
+                console.log(err);
+            }
+            setIsLoading(false);
         });
 
         return () => {
             gameRef.off('value', getActiveHostedGames);
             playerRef.off('value', getActivePlayerGames);
+            soloRef.off('value', getActiveSoloGames);
         }
     });
 
     // Switch render based on user selection for games hosting vs participating in
     const switchModeHandler = (status) => {
-        setIsHosting(status);
+        setSessionType(status);
     };
 
     return (
@@ -117,15 +146,23 @@ const ActiveGames = ({ route, navigation }) => {
                         <Text style={styles.title}>Active Games</Text> 
                     </View>
                     <View style={styles.bottom}>
-                        <View style={styles.menu}>
-                            <TouchableOpacity onPress={() => switchModeHandler(false)}>
-                                <Text style={isHosting ? styles.text : styles.activeText}>Active</Text>
+                        {/* <View style={styles.menu}> */}
+                            {/* <TouchableOpacity onPress={() => switchModeHandler('Active')}>
+                                <Text style={sessionType === 'Active' ? styles.activeText : styles.text}>Active</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => switchModeHandler(true)}>
-                                <Text style={isHosting ? styles.activeText : styles.text}>Hosting</Text>
+                            <TouchableOpacity onPress={() => switchModeHandler('Solo')}>
+                                <Text style={sessionType === 'Solo' ? styles.activeText : styles.text}>Solo</Text>
                             </TouchableOpacity>
-                        </View>
-                        <ActiveGamesList selection={isHosting} sessionListHost={sessionDetailsHosting} sessionListPlayer={sessionDetailsPlayer}/>
+                            <TouchableOpacity onPress={() => switchModeHandler('Hosting')}>
+                                <Text style={sessionType === 'Hosting' ? styles.activeText : styles.text}>Hosting</Text>
+                            </TouchableOpacity> */}
+                        {/* </View> */}
+                        <ActiveGamesList 
+                            selection={sessionType} 
+                            sessionListHost={sessionDetailsHosting} 
+                            sessionListPlayer={sessionDetailsPlayer} 
+                            sessionListSolo={sessionDetailsSolo}
+                        />
                     </View>
                 </View> ) : (
                     <LoadingScreen 
