@@ -74,13 +74,13 @@ const SoloGame = ({route, navigation}) => {
         <>
         {!isLoading ? (
             <View style={styles.container}>
-                {/* <View style={styles.top}>
+                <View style={styles.top}>
                     <TouchableOpacity 
                         activeOpacity={0.1}
                         underlayColor="#DDDDDD"
                         style={styles.arrow}
                         onPress={() => {
-                            deleteGame(session);
+                            // deleteGame(session);
                             navigation.pop()
                         }}>
                     <Image 
@@ -88,8 +88,7 @@ const SoloGame = ({route, navigation}) => {
                         style={styles.arrow}
                     />
                     </TouchableOpacity>
-                    {/* <Text style={styles.text}>Join Game</Text>  */}
-                {/* </View>  */}
+                </View>
                 <View style={styles.bottom}>
                     <View 
                         style={styles.card}
@@ -175,13 +174,16 @@ const styles = StyleSheet.create({
     },
     top: {
         flex: 1,
-        // padding: 20,
+        zIndex: 100,
+        position: 'relative',
+        paddingHorizontal: 20,
     },
     bottom: {
         flex: 4,
+        position: 'relative',
+        zIndex: 50,
         flexDirection: 'column',
-        alignItems: 'center'
-        // padding: 20,
+        alignItems: 'center',
     },
     text: {
         fontSize: 40, 
