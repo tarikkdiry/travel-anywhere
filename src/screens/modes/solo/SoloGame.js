@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, Image, TextInput, Dimensions } from 'react-native';
-import BackArrow from '../../../../assets/back_arrow.png';
+import HomeIcon from '../../../../assets/home.png';
 import * as firebase from 'firebase';
 import data from '../../../../data/data.json';
 import { TouchableOpacity, PanGestureHandler, ScrollView } from 'react-native-gesture-handler';
@@ -84,10 +84,10 @@ const SoloGame = ({route, navigation}) => {
                         style={styles.arrow}
                         onPress={() => {
                             // deleteGame(session);
-                            navigation.pop()
+                            navigation.navigate('Welcome')
                         }}>
                     <Image 
-                        source={BackArrow}
+                        source={HomeIcon}
                         style={styles.arrow}
                     />
                     </TouchableOpacity>

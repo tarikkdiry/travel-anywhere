@@ -131,6 +131,7 @@ export default function App() {
           component={SoloGame}
           options={{
             headerShown: false,
+            gestureEnabled: false
           }}
         />
         <Stack.Screen 

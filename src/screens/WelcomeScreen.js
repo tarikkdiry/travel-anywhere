@@ -67,7 +67,7 @@ const WelcomeScreen = ({ route, navigation }) => {
                         }}
                     />
                     <Button 
-                        title="Solo Travel"
+                        title="New Solo Adventure"
                         style={styles.button}
                         color="white"
                         onPress={() => {
