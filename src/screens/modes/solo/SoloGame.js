@@ -40,7 +40,10 @@ const SoloGame = ({route, navigation}) => {
     const visibleCards = Math.floor(containerHeight / CARD_HEIGHT);
 
     useEffect(() => {
-        // console.log(availableCards);
+        // if (!isSelectMode) {
+        //     console.log('Selected!');
+        //     setIsSelectMode(true);
+        // }
     })
 
     const y = diffClamp(
@@ -136,6 +139,7 @@ const SoloGame = ({route, navigation}) => {
                                                     
                                                 ]}
                                                 key={index}
+                                                onPress={() => setIsSelectMode(false)}
                                             >
                                                 <Card 
                                                     key={Math.random()} // Doesn't have to be super secure
