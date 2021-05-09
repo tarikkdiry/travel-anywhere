@@ -81,14 +81,14 @@ const SoloGame = ({route, navigation}) => {
                     <TouchableOpacity 
                         activeOpacity={0.1}
                         underlayColor="#DDDDDD"
-                        style={styles.arrow}
+                        // style={styles.home}
                         onPress={() => {
                             // deleteGame(session);
                             navigation.navigate('Welcome')
                         }}>
                     <Image 
                         source={HomeIcon}
-                        style={styles.arrow}
+                        style={styles.home}
                     />
                     </TouchableOpacity>
                 </View>
@@ -174,20 +174,25 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#03588C',
-        paddingTop: 20
+        paddingTop: 20,
+        position: 'absolute'
     },
     top: {
         flex: 1,
         zIndex: 100,
-        position: 'relative',
+        position: 'absolute',
         paddingHorizontal: 20,
+        // paddingTop: '90%',
     },
     bottom: {
         flex: 4,
+        zIndex: 0,
+        // position: 'absolute',
         position: 'relative',
-        zIndex: 50,
         flexDirection: 'column',
         alignItems: 'center',
+        // paddingHorizontal: '10%'
+        // justifyContent: 'center'
     },
     text: {
         fontSize: 40, 
@@ -196,11 +201,12 @@ const styles = StyleSheet.create({
         marginTop: '20%',
         padding: 20
     },
-    arrow: {
-        height: 50,
-        width: 50,
+    home: {
+        height: 70,
+        width: 70,
         tintColor: 'white',
-        marginTop: '20%',
+        marginTop: '130%',
+        // zIndex: 100
     },
     card: {
         
